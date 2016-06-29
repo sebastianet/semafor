@@ -1,0 +1,23 @@
+{
+  "name": "semafor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "1-sem.js",
+  "dependencies": {
+    "connect": "^3.4.1",
+    "express": "^4.14.0",
+    "morgan": "^1.7.0",
+    "python-shell": "^0.4.0",
+    "rpi-gpio": "^0.7.0",
+    "serialport": "^3.1.2",
+    "serve-static": "^1.11.1",
+    "socket.io": "^1.4.8",
+    "xml2json": "^0.9.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "sudo  node  1-sem.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

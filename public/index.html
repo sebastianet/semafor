@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+ <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+
+ <link rel="shortcut icon" href="./favicon.ico" />
+
+ <link rel="stylesheet" type="text/css" href="css/sem.css" />
+
+ <title> Semafor d'en JA </title>
+ <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+ 
+</head>
+
+<body id="home">
+
+<hr>
+
+<div id="container">
+
+<div id="header">
+    <h1> Benvingut a la web de manegament del semafor </h1>
+</div>
+
+<hr>
+
+<div id="navegacio">
+
+<h2> Navegacio </h2>
+
+<ul>
+
+ <li> Llum verd : engegar / aturar
+ <li> Llum groc : engegar / aturar
+ <li> Llum vermell : engegar / aturar
+
+ <li> Els 3 llums : engegar / aturar
+ <li> Flash 3 llums a l'hora : engegar / aturar
+
+ <li> Sequencia Verd -> Groc -> Vermell : 
+ <a href="#" id="clkActivar">engegar</a>
+ /
+ <a href="#" id="clkAturar">aturar</a>
+
+ <li> Foto : primer
+<a href="#" id="clkFoto-fer">fer-la</a> i despres <a href="#" id="clkFoto-show">mostrar-la</a>
+
+ <li> Velocitat de repeticio : baixa / mitjana / rapida
+
+</ul>
+
+</div>
+
+<hr>
+
+<table class="timg">
+<tr>
+<td width="50%">
+<div id="contingut">
+ &nbsp; contingut
+</div>
+
+<td width="50%">
+
+<div id="imatge-div">
+<p>
+Imatge de la web-cam [300x250] :
+
+ <img id="imatge-webcam" src="/images/blanc.jpg" width="300" height="250">
+</div>
+
+</table>
+
+<hr>
+
+<div id="anuncis">
+ <p align="center">Espai reservat per anuncis, noticies, etc</p>
+</div>
+
+<hr>
+
+<div id="peudepagina">
+ <table class="tpeu">
+ <tr>
+
+ <td>
+ <a href="#">Privacy</a> | <a href="#">Terms</a>
+
+ <td>
+ Valid <a href="http://validator.w3.org/check?uri=referer">XHTML</a> | Valid <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a>
+ 
+ <td>
+ &copy; 2016 &amp; 2015, <a href="https://github.com/sebastianet/wCDT">Sebas</a>
+
+ <td>
+  <div id="my_date">
+  &nbsp;
+  </div>
+
+ </table>
+</div>
+
+</div>
+
+<hr>
+
+<script>
+
+
+$( function() { // DOM ready
+    console.log( '*** client DOM ready.' ) ;
+    $.get( '/initial.htm', function( page ) {  // posem al CONTENT (we are a SPA) la sub-pagina INITAL.HTML
+        console.log( '*** Demanem al server INITIAL.HTM, initial SPA text.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ; // get(initial.htm)
+
+// posar la data actual a baix a l'esquerra - aixi diferenciem re-loads - "Now is"
+    var szAra = '<center>[' + (new Date).yyyymmdd() +','+ (new Date).hhmmss() + ']</center>' ;
+    $( "#my_date" ).html( szAra ) ; // show actual date
+
+} ) ; // DOM ready
+
+
+$( "#clkActivar" ).click( function() {
+    $.get( '/activar-sequencia-VAR', function( page ) {
+        console.log( '*** index - demanem al server ACTIVAR sequencia VAR.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ; // get(activar)
+}) ; // activar sequencia VAR
+
+
+$( "#clkAturar" ).click( function() {
+    $.get( '/parar-sequencia-VAR', function( page ) {
+        console.log( '*** index - demanem al server ATURAR sequencia VAR.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ; // get(aturar)
+}) ; // aturar sequencia VAR
+
+
+$( "#clkFoto-show" ).click( function() {
+    $( "#imatge-webcam" ).attr( 'src', '/images/1-webcam.png' ) ;
+}) ; // show foto
+
+$( "#clkFoto-fer" ).click( function() {
+    $.get( '/fer-foto', function( page ) {
+        console.log( '*** index - demanem al server FER una foto.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ; // get(activar)
+}) ; // fer foto
+
+// nova funcio yymmdd de Date() - at client
+Date.prototype.yyyymmdd = function () {                            
+	var yyyy = this.getFullYear().toString();                                    
+	var mm   = (this.getMonth()+1).toString(); // getMonth() is zero-based         
+	var dd   = this.getDate().toString();
+	return yyyy + '/' + (mm[1]?mm:"0"+mm[0]) + '/' + (dd[1]?dd:"0"+dd[0]);
+} ; // yyyymmd
+
+Date.prototype.hhmmss = function () {
+	function fixTime(i) {
+        return (i < 10) ? "0" + i : i;
+    }
+	var today = new Date(),
+	    hh = fixTime( today.getHours() ),
+		mm = fixTime( today.getMinutes() ),
+		ss = fixTime( today.getSeconds() ) ;
+	var myHHMMSS = hh + ':' + mm + ':' + ss ;
+	return myHHMMSS ;
+} ; // hhmmss
+
+</script>
+
+</body>
+</html>
+
