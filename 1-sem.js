@@ -6,6 +6,7 @@
 // Versions ( displayed via "myVersio")
 // 1.0.a - inici del codi amb express
 // 1.0.b - send PNG file
+// 1.0.c - myIntervalValue changed from client
 
 // Conexionat del GPIO :
 // el "yellow" correspon al pin numero 15, cable gris
@@ -52,7 +53,7 @@ var myIntervalValue = 1000 ;  // slow = 3000, normal = 1000, fast = 500.
 
     app.set( 'mPort', process.env.PORT || 1212 ) ;      // save port to use in APP var
 
-    var myVersio     = "v1.0.b" ;
+    var myVersio     = "v1.0.c" ;
 
 // tell Express application to load and server static files (if there any) from public folder:
     app.use( express.static( __dirname + '/public' ) );            // set the static files location /public/img will be /img for users
@@ -134,6 +135,55 @@ gpio.setup( 18, gpio.DIR_OUT, function(err) {
 // app.get( '/', function (req, res)            { res.send( 'Hola, mundo !' ); });
 
 
+app.post( '/menu_apagar_llum/Color=:res_color_llum', function ( req, res ) {
+
+     var Apagar_Llum_Color = req.params.res_color_llum ;
+     var szResultat = "" ;
+     console.log( '>>> Menu apagar llum (%s).', Apagar_Llum_Color );
+
+     if ( Apagar_Llum_Color == 'verd' ) {
+          apagarLuz( 18 ) ;
+          szResultat = "+++ llum verda apagada." ;
+     } else if ( Apagar_Llum_Color == 'groc' ) {
+          apagarLuz( 15 ) ;
+          szResultat = "+++ llum groc apagat." ;
+     } else if ( Apagar_Llum_Color == 'vermell' ) {
+          apagarLuz( 16 ) ;
+          szResultat = "+++ llum vermell apagat." ;
+     } else {
+          szResultat = '--- color ('+Apagar_Llum_Color+') no reconegut.' ;
+     } ;
+
+     console.log( szResultat );
+     res.status( 200 ).send( szResultat ) ; 
+
+} ) ; // menu apagar llum
+
+app.post( '/menu_encendre_llum/Color=:res_color_llum', function ( req, res ) {
+
+     var Encendre_Llum_Color = req.params.res_color_llum ;
+     var szResultat = "" ;
+     console.log( '>>> Menu encendre llum (%s).', Encendre_Llum_Color );
+
+     if ( Encendre_Llum_Color == 'verd' ) {
+          encenderLuz( 18 ) ;
+          szResultat = "+++ llum verda encesa." ;
+     } else if ( Encendre_Llum_Color == 'groc' ) {
+          encenderLuz( 15 ) ;
+          szResultat = "+++ llum groc ences." ;
+     } else if ( Encendre_Llum_Color == 'vermell' ) {
+          encenderLuz( 16 ) ;
+          szResultat = "+++ llum vermell ences." ;
+     } else {
+          szResultat = '--- color ('+Encendre_Llum_Color+') no reconegut.' ;
+     } ;
+
+     console.log( szResultat );
+     res.status( 200 ).send( szResultat ) ; 
+
+} ) ; // menu encendre llum
+
+
 app.get( '/fer-foto', function (req, res) {
 
 var python_options = {
@@ -144,12 +194,12 @@ var python_options = {
   args: ['value1', 'value2', 'value3']
 } ;
 
-     console.log( '>>> Hacer foto.' );
-//     PythonShell.run( '2-webcam.py', python_options, function( err, results ) {
-     PythonShell.run( '2-proves.py', function( err, results ) {
+     console.log( '>>> Hacer foto via PYTHON.' );
+     PythonShell.run( '2-foto.py', function( err, results ) {
           if ( err ) throw err;
           console.log( '(+) Python results are (%j).', results ) ; // results is an array consisting of messages collected during execution
-//          console.log( '(+) Python finished.' ) ;
+          var szResultat = "+++ foto feta." ;
+          res.status( 200 ).send( szResultat ) ; 
      } ) ;
 } ) ; // fer foto
 
@@ -167,6 +217,31 @@ app.get( '/mostrar-foto', function (req, res) {
      res.end( '"/>' ) ;
 
 } ) ; // mostrar foto
+
+
+app.get( '/modificar_interval/Periode=:res_nou_periode', function (req, res) { 
+
+     var Nou_Periode = req.params.res_nou_periode ;
+     var szResultat = "" ;
+     console.log( '>>> Menu modificar periode (%s).', Nou_Periode );
+
+     if ( Nou_Periode == 'rapid' ) {
+          myIntervalValue = 500 ;
+          szResultat = "+++ periode 500, velocitat rapida." ;
+     } else if ( Nou_Periode == 'mitja' ) {
+          myIntervalValue = 1000 ;
+          szResultat = "+++ periode 1000, velocitat mitja." ;
+     } else if ( Nou_Periode == 'lent' ) {
+          myIntervalValue = 3000 ;
+          szResultat = "+++ periode 3000, velocitat lenta." ;
+     } else {
+          szResultat = '--- valor ('+Nou_Periode+') no reconegut.' ;
+     } ;
+
+     console.log( szResultat );
+     res.status( 200 ).send( szResultat ) ; 
+
+} ) ; // modificar interval intermitencies
 
 
 app.get( '/activar-sequencia-VAR', function (req, res) { 

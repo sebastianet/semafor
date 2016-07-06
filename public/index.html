@@ -21,22 +21,36 @@
 <div id="container">
 
 <div id="header">
-    <h1> Benvingut a la web de manegament del semafor </h1>
+    <h1> Benvingut a la web de manegament del sem&agrave;for </h1>
 </div>
 
 <hr>
 
 <div id="navegacio">
 
-<h2> Navegacio </h2>
+<h2> Navegaci&oacute; </h2>
 
 <ul>
 
- <li> Llum verd : engegar / aturar
- <li> Llum groc : engegar / aturar
- <li> Llum vermell : engegar / aturar
+ <li> Llum verd (18) : 
+<a href="#" id="clkEncendreVerd">engegar</a>
+/ 
+<a href="#" id="clkApagarVerd">apagar</a>
+
+ <li> Llum groc (15) :
+<a href="#" id="clkEncendreGroc">engegar</a>
+/
+<a href="#" id="clkApagarGroc">apagar</a>
+
+ <li> Llum vermell (16) :
+<a href="#" id="clkEncendreVermell">engegar</a>
+/
+<a href="#" id="clkApagarVermell">apagar</a>
 
  <li> Els 3 llums : engegar / aturar
+
+ <li> Intermitencia : engegar verd / groc / vermell - aturar
+
  <li> Flash 3 llums a l'hora : engegar / aturar
 
  <li> Sequencia Verd -> Groc -> Vermell : 
@@ -45,9 +59,17 @@
  <a href="#" id="clkAturar">aturar</a>
 
  <li> Foto : primer
-<a href="#" id="clkFoto-fer">fer-la</a> i despres <a href="#" id="clkFoto-show">mostrar-la</a>
+<a href="#" id="clkFoto-fer">fer-la</a> (compte : triga 3-4 segons) i despres <a href="#" id="clkFoto-show">mostrar-la</a>.
+Si volem,
+<a href="#" id="clkFoto-netejar">netegem</a> la pantalla.
 
- <li> Velocitat de repeticio : baixa / mitjana / rapida
+ <li> Velocitat de repetici&oacute; :
+
+<a href="#" id="clkRepeticioLenta">baixa</a>
+/
+<a href="#" id=""clkRepeticioNormal"">mitjana</a>
+/ 
+<a href="#" id="clkRepeticioRapida">rapida</a>
 
 </ul>
 
@@ -58,16 +80,18 @@
 <table class="timg">
 <tr>
 <td width="50%">
+<h2> StatusQuo :</h2>
+
 <div id="contingut">
- &nbsp; contingut
+ &nbsp; estatus
 </div>
 
 <td width="50%">
 
-<div id="imatge-div">
 <p>
 Imatge de la web-cam [300x250] :
 
+<div id="imatge-div">
  <img id="imatge-webcam" src="/images/blanc.jpg" width="300" height="250">
 </div>
 
@@ -76,7 +100,7 @@ Imatge de la web-cam [300x250] :
 <hr>
 
 <div id="anuncis">
- <p align="center">Espai reservat per anuncis, noticies, etc</p>
+ <p>Espai reservat per anuncis, noticies, etc</p>
 </div>
 
 <hr>
@@ -92,7 +116,8 @@ Imatge de la web-cam [300x250] :
  Valid <a href="http://validator.w3.org/check?uri=referer">XHTML</a> | Valid <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a>
  
  <td>
- &copy; 2016 &amp; 2015, <a href="https://github.com/sebastianet/wCDT">Sebas</a>
+ &copy; 2016 &amp; 2015, <a href="https://github.com/sebastianet/wCDT">Sebas</a>,
+<a href="https://github.com/sebastianet/semafor">git</a>
 
  <td>
   <div id="my_date">
@@ -117,7 +142,7 @@ $( function() { // DOM ready
     }) ; // get(initial.htm)
 
 // posar la data actual a baix a l'esquerra - aixi diferenciem re-loads - "Now is"
-    var szAra = '<center>[' + (new Date).yyyymmdd() +','+ (new Date).hhmmss() + ']</center>' ;
+    var szAra = 'Timestamp [' + (new Date).yyyymmdd() +', '+ (new Date).hhmmss() + ']' ;
     $( "#my_date" ).html( szAra ) ; // show actual date
 
 } ) ; // DOM ready
@@ -139,9 +164,86 @@ $( "#clkAturar" ).click( function() {
 }) ; // aturar sequencia VAR
 
 
-$( "#clkFoto-show" ).click( function() {
+$( "#clkApagarVerd" ).click( function() {
+    $.post( '/menu_apagar_llum/Color=verd', function( page ) {
+        console.log( '*** index - demanem al server APAGAR LLUM VERD.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ; 
+}) ; // apagar verd
+
+$( "#clkApagarGroc" ).click( function() {
+    $.post( '/menu_apagar_llum/Color=groc', function( page ) {
+        console.log( '*** index - demanem al server APAGAR LLUM GROC.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ; 
+}) ; // apagar groc
+
+$( "#clkApagarVermell" ).click( function() {
+    $.post( '/menu_apagar_llum/Color=vermell', function( page ) {
+        console.log( '*** index - demanem al server APAGAR LLUM VERMELL.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ; 
+}) ; // apagar vermell
+
+ 
+$( "#clkEncendreVerd" ).click( function() {
+    $.post( '/menu_encendre_llum/Color=verd', function( page ) {
+        console.log( '*** index - demanem al server ENCENDRE LLUM VERD.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ; 
+}) ; // encendre verd
+
+$( "#clkEncendreGroc" ).click( function() {
+    $.post( '/menu_encendre_llum/Color=groc', function( page ) {
+        console.log( '*** index - demanem al server ENCENDRE LLUM GROC.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ;
+}) ; // encendre groc
+
+$( "#clkEncendreVermell" ).click( function() {
+    $.post( '/menu_encendre_llum/Color=vermell', function( page ) {
+        console.log( '*** index - demanem al server ENCENDRE LLUM VERMELL.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ;
+}) ; // encendre vermell
+
+
+$( "#clkRepeticioRapida" ).click( function() {
+    $.post( '/modificar_interval/Periode=rapid', function( page ) {
+        console.log( '*** index - demanem al server PERIODE PETIT.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ;
+}) ; // periode rapid
+
+$( "#clkRepeticioNormal" ).click( function() {
+    $.post( '/modificar_interval/Periode=mitja', function( page ) {
+        console.log( '*** index - demanem al server PERIODE MITJA.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ;
+}) ; // periode mitja
+
+$( "#clkRepeticioLenta" ).click( function() {
+    $.post( '/modificar_interval/Periode=lent', function( page ) {
+        console.log( '*** index - demanem al server PERIODE GRAN.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ;
+}) ; // periode lent
+
+
+$( "#clkFoto-netejar" ).click( function() {
     $( "#imatge-webcam" ).attr( 'src', '/images/1-webcam.png' ) ;
-}) ; // show foto
+    var szOut = 'netegem el espai de la foto' ;
+    $( "#contingut" ).html( szOut ) ; // show this HTML at specific <div>
+}) ; // netejar foto
+
+
+$( "#clkFoto-show" ).click( function() {
+    var szFileFoto = '/images/webcam.png' ;
+    console.log( '*** index - MOSTREM una foto (%s).', szFileFoto ) ;
+    $( "#imatge-webcam" ).attr( 'src', szFileFoto ) ;
+    var szOut = 'foto (' + szFileFoto + ') amostrada' ;
+    $( "#contingut" ).html( szOut ) ; // show this HTML at specific <div>
+}) ; // mostrar foto
 
 $( "#clkFoto-fer" ).click( function() {
     $.get( '/fer-foto', function( page ) {
@@ -149,6 +251,7 @@ $( "#clkFoto-fer" ).click( function() {
         $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
     }) ; // get(activar)
 }) ; // fer foto
+
 
 // nova funcio yymmdd de Date() - at client
 Date.prototype.yyyymmdd = function () {                            

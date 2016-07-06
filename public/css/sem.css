@@ -7,6 +7,16 @@
 #anuncis {
     border: 1px solid blue ;
     background: #a0a0a0 ;
+    text-align: center ;
+ }
+
+#contingut {
+    text-align: center ;
+ }
+
+#my_date{
+    text-align: center ;
+    color: green ;
  }
 
 .timg {
