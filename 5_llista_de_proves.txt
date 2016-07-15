@@ -1,0 +1,5 @@
+.
+ (.) engegar llum verd + apagar llum verd, 3 vegades
+.
+
+

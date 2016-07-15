@@ -1,0 +1,13 @@
+
+. establir punt de control    : git commit -am "v1.0.b contingut inicial, funciona"
+. enviar codi                 : git push -u origin master
+. URL                         : https://github.com/sebastianet/semafor
+
+. export DISPLAY=:0
+
+. python retorna el nom del fitxer que ha creat - nom amb timestamp
+. primer esborrem el fitxer que tenim, el "anterior"
+
+. sudo service ssh status
+
+. netstat -tlpn
