@@ -1,1 +1,1 @@
-sudo  node  1-sem.js
+sudo  node  1_sem.js

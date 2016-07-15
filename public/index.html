@@ -33,43 +33,51 @@
 <ul>
 
  <li> Llum verd (18) : 
-<a href="#" id="clkEncendreVerd">engegar</a>
+<a href="#" id="clk_Encendre_Verd">engegar</a>
 / 
-<a href="#" id="clkApagarVerd">apagar</a>
+<a href="#" id="clk_Apagar_Verd">apagar</a>
+/
+<a href="#" id="clk_engegar_Intermitent_Verd">intermitent</a>
 
  <li> Llum groc (15) :
-<a href="#" id="clkEncendreGroc">engegar</a>
+<a href="#" id="clk_Encendre_Groc">engegar</a>
 /
-<a href="#" id="clkApagarGroc">apagar</a>
+<a href="#" id="clk_Apagar_Groc">apagar</a>
+/
+<a href="#" id="clk_engegar_Intermitent_Groc">intermitent</a>
 
  <li> Llum vermell (16) :
-<a href="#" id="clkEncendreVermell">engegar</a>
+<a href="#" id="clk_Encendre_Vermell">engegar</a>
 /
-<a href="#" id="clkApagarVermell">apagar</a>
+<a href="#" id="clk_Apagar_Vermell">apagar</a>
+/
+<a href="#" id="clk_engegar_Intermitent_Vermell">intermitent</a>
 
- <li> Els 3 llums : engegar / aturar
-
- <li> Intermitencia : engegar verd / groc / vermell - aturar
-
- <li> Flash 3 llums a l'hora : engegar / aturar
+ <li> Els 3 llums :
+<a href="#" id="clk_Encendre_Tres_Llums">engegar</a>
+/ apagar /
+<a href="#" id="clk_engegar_Intermitent_Tres_Lums">intermitent</a>
 
  <li> Sequencia Verd -> Groc -> Vermell : 
  <a href="#" id="clkActivar">engegar</a>
  /
- <a href="#" id="clkAturar">aturar</a>
-
- <li> Foto : primer
-<a href="#" id="clkFoto-fer">fer-la</a> (compte : triga 3-4 segons) i despres <a href="#" id="clkFoto-show">mostrar-la</a>.
-Si volem,
-<a href="#" id="clkFoto-netejar">netegem</a> la pantalla.
+ <a href="#" id="clkAturar">apagar</a>
 
  <li> Velocitat de repetici&oacute; :
 
 <a href="#" id="clkRepeticioLenta">baixa</a>
 /
-<a href="#" id=""clkRepeticioNormal"">mitjana</a>
+<a href="#" id="clkRepeticioNormal">mitjana</a>
 / 
 <a href="#" id="clkRepeticioRapida">rapida</a>
+
+ <li> Foto : primer
+<a href="#" id="clkFoto_fer">fer-la</a> (compte : triga 3-4 segons) i despres <a href="#" id="clkFoto_show">mostrar-la</a>.
+Podem
+<a href="#" id="clkFoto_netejar">netejar</a> la pantalla.
+O
+<a href="#" id="clkFoto_esborrar">esborrar</a> el fitxer !
+Esborrar cache : Ctrl + Shift + Delete
 
 </ul>
 
@@ -79,20 +87,18 @@ Si volem,
 
 <table class="timg">
 <tr>
-<td width="50%">
+<td width="60%">
 <h2> StatusQuo :</h2>
 
 <div id="contingut">
  &nbsp; estatus
 </div>
 
-<td width="50%">
+<td width="40%">
 
-<p>
-Imatge de la web-cam [300x250] :
-
-<div id="imatge-div">
- <img id="imatge-webcam" src="/images/blanc.jpg" width="300" height="250">
+<div id="imatge_div">
+ <img id="imatge_webcam" src="/images/blanc.jpg" width="300" height="250">
+Imatge de la web-cam [300x250]
 </div>
 
 </table>
@@ -100,7 +106,7 @@ Imatge de la web-cam [300x250] :
 <hr>
 
 <div id="anuncis">
- <p>Espai reservat per anuncis, noticies, etc</p>
+ Espai reservat per anuncis, noticies, etc
 </div>
 
 <hr>
@@ -116,8 +122,12 @@ Imatge de la web-cam [300x250] :
  Valid <a href="http://validator.w3.org/check?uri=referer">XHTML</a> | Valid <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a>
  
  <td>
- &copy; 2016 &amp; 2015, <a href="https://github.com/sebastianet/wCDT">Sebas</a>,
+ &copy; 2016 &amp; 2015, <a href="https://github.com/sebastianet/wCDT">Sebas</a> @
 <a href="https://github.com/sebastianet/semafor">git</a>
+
+ <td>
+ 
+ Help | <a href="#" id="clkId">Id</a>
 
  <td>
   <div id="my_date">
@@ -148,6 +158,14 @@ $( function() { // DOM ready
 } ) ; // DOM ready
 
 
+$( "#clkId" ).click( function() {
+    $.get( '/identificar', function( page ) {
+        console.log( '*** index - demanem al server IDENTIFICAR.' ) ;
+        $( "#anuncis" ).html( page ) ; // show received HTML at specific <div>
+    }) ; // get(activar)
+}) ; // identificar
+
+
 $( "#clkActivar" ).click( function() {
     $.get( '/activar-sequencia-VAR', function( page ) {
         console.log( '*** index - demanem al server ACTIVAR sequencia VAR.' ) ;
@@ -164,21 +182,21 @@ $( "#clkAturar" ).click( function() {
 }) ; // aturar sequencia VAR
 
 
-$( "#clkApagarVerd" ).click( function() {
+$( "#clk_Apagar_Verd" ).click( function() {
     $.post( '/menu_apagar_llum/Color=verd', function( page ) {
         console.log( '*** index - demanem al server APAGAR LLUM VERD.' ) ;
         $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
     }) ; 
 }) ; // apagar verd
 
-$( "#clkApagarGroc" ).click( function() {
+$( "#clk_Apagar_Groc" ).click( function() {
     $.post( '/menu_apagar_llum/Color=groc', function( page ) {
         console.log( '*** index - demanem al server APAGAR LLUM GROC.' ) ;
         $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
     }) ; 
 }) ; // apagar groc
 
-$( "#clkApagarVermell" ).click( function() {
+$( "#clk_Apagar_Vermell" ).click( function() {
     $.post( '/menu_apagar_llum/Color=vermell', function( page ) {
         console.log( '*** index - demanem al server APAGAR LLUM VERMELL.' ) ;
         $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
@@ -186,26 +204,64 @@ $( "#clkApagarVermell" ).click( function() {
 }) ; // apagar vermell
 
  
-$( "#clkEncendreVerd" ).click( function() {
+$( "#clk_Encendre_Verd" ).click( function() {
     $.post( '/menu_encendre_llum/Color=verd', function( page ) {
         console.log( '*** index - demanem al server ENCENDRE LLUM VERD.' ) ;
         $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
     }) ; 
 }) ; // encendre verd
 
-$( "#clkEncendreGroc" ).click( function() {
+$( "#clk_Encendre_Groc" ).click( function() {
     $.post( '/menu_encendre_llum/Color=groc', function( page ) {
         console.log( '*** index - demanem al server ENCENDRE LLUM GROC.' ) ;
         $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
     }) ;
 }) ; // encendre groc
 
-$( "#clkEncendreVermell" ).click( function() {
+$( "#clk_Encendre_Vermell" ).click( function() {
     $.post( '/menu_encendre_llum/Color=vermell', function( page ) {
         console.log( '*** index - demanem al server ENCENDRE LLUM VERMELL.' ) ;
         $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
     }) ;
 }) ; // encendre vermell
+
+$( "#clk_Encendre_Tres_Llums" ).click( function() {
+    $.post( '/menu_encendre_llum/Color=tres_llums', function( page ) {
+        console.log( '*** index - demanem al server ENCENDRE 3 LLUMS.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ;
+}) ; // encendre vermell
+
+
+
+$( "#clk_engegar_Intermitent_Verd" ).click( function() {
+    $.post( '/menu_engegar_sequencia/Tipus_intermitent_verd', function( page ) {
+        console.log( '*** index - demanem al server engegar INTERMITENT VERD.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ;
+}) ; // engegar intermitent verd
+
+$( "#clk_engegar_Intermitent_Groc" ).click( function() {
+    $.post( '/menu_engegar_sequencia/Tipus=intermitent_groc', function( page ) {
+        console.log( '*** index - demanem al server engegar INTERMITENT GROC.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ;
+}) ; // engegar intermitent groc
+
+$( "#clk_engegar_Intermitent_Vermell" ).click( function() {
+    $.post( '/menu_engegar_sequencia/Tipus=intermitent_vermell', function( page ) {
+        console.log( '*** index - demanem al server engegar INTERMITENT VERMELL.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ;
+}) ; // engegar intermitent vermell
+
+$( "#clk_engegar_Intermitent_Tres_Lums" ).click( function() {
+    $.post( '/menu_engegar_sequencia/Tipus=intermitent_tres_llums', function( page ) {
+        console.log( '*** index - demanem al server engegar INTERMITENT 3 LLUMS.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ;
+}) ; // engegar intermitent 3 llums
+
 
 
 $( "#clkRepeticioRapida" ).click( function() {
@@ -230,23 +286,40 @@ $( "#clkRepeticioLenta" ).click( function() {
 }) ; // periode lent
 
 
-$( "#clkFoto-netejar" ).click( function() {
-    $( "#imatge-webcam" ).attr( 'src', '/images/1-webcam.png' ) ;
+$( "#clkFoto_esborrar" ).click( function() {
+    $.get( '/foto_esborrar', function( page ) {
+        console.log( '*** index - demanem al server ESBORRAR la foto.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ; // get(activar)
+}) ; // esborrar foto
+
+
+$( "#clkFoto_netejar" ).click( function() {
+    $( "#imatge_webcam" ).attr( 'src', '/images/1-webcam.png' ) ;
     var szOut = 'netegem el espai de la foto' ;
     $( "#contingut" ).html( szOut ) ; // show this HTML at specific <div>
 }) ; // netejar foto
 
 
-$( "#clkFoto-show" ).click( function() {
+$( "#clkFoto_show_directe" ).click( function() {
     var szFileFoto = '/images/webcam.png' ;
     console.log( '*** index - MOSTREM una foto (%s).', szFileFoto ) ;
-    $( "#imatge-webcam" ).attr( 'src', szFileFoto ) ;
+    $( "#imatge_webcam" ).attr( 'src', szFileFoto ) ;
     var szOut = 'foto (' + szFileFoto + ') amostrada' ;
     $( "#contingut" ).html( szOut ) ; // show this HTML at specific <div>
 }) ; // mostrar foto
 
-$( "#clkFoto-fer" ).click( function() {
-    $.get( '/fer-foto', function( page ) {
+$( "#clkFoto_show" ).click( function() {
+    $.get( '/mostrar_foto', function( page ) {
+        console.log( '*** index - demanem al server la darrera foto.' ) ;
+//      $( "#imatge_webcam" ).attr( 'src', page ) ;
+        $( "#imatge_div" ).html( page ) ; //  <div id="imatge_div">
+    }) ; // get(mostrar)
+}) ; // mostrar foto
+
+
+$( "#clkFoto_fer" ).click( function() {
+    $.get( '/fer_foto', function( page ) {
         console.log( '*** index - demanem al server FER una foto.' ) ;
         $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
     }) ; // get(activar)
