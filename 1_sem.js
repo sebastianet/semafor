@@ -15,6 +15,7 @@
 // 1.0.j - sequenciador : intermitent tres llums
 // 1.0.k - seq RAV
 // 1.0.l - ramdom color
+// 1.0.m - enviem missatges whatsapp des python
 
 
 // Conexionat del GPIO :
@@ -35,8 +36,12 @@
 //     http://192.168.1.123:1212/hacer-foto
 
 // Documentacio :
-//     filesystem          : https://nodejs.org/api/fs.html
-//     tancar ordenadament : http://stackoverflow.com/questions/14031763/doing-a-cleanup-action-just-before-node-js-exits/14032965#14032965
+//     filesystem             : https://nodejs.org/api/fs.html
+//     tancar ordenadament    : http://stackoverflow.com/questions/14031763/doing-a-cleanup-action-just-before-node-js-exits/14032965#14032965
+//     call python from node  : https://github.com/extrabacon/python-shell
+//         rc = 1             : https://github.com/extrabacon/python-shell/issues/46
+//     yowsup                 : https://github.com/tgalal/yowsup
+//         rc 1               : https://github.com/tgalal/yowsup/issues/1702
 
 // Temes pendents :
 //     (*) abans de fer una foto, esborrar la anterior (encara en tenim el nom)
@@ -49,6 +54,7 @@
 //     (*) enviat missatge whatsapp (amb una imatge) des el browser
 //     (*) identificar el usuari al client
 //     (*) random(3 bits) -> 8 valors
+//     (*) fer LOGON() obligatori i fer una trassa de IPs que entren
 
 // Pla de proves de correcte funcionament : 5_llista_de_proves.txt
 
@@ -82,7 +88,7 @@ var PinEncendido    = k_Vermell ;       // to cycle thru color sequence.
 var myIntervalObject ;                  // used by clearInterval.
 var myIntervalValue = 1000 ;            // slow = 3000, normal = 1000, fast = 500.
 var szResultat      = '' ;              // console and client return string
-var myVersio        = 'v1.0.l' ;        // version identifier
+var myVersio        = 'v1.0.m' ;        // version identifier
 var png_File        = '/home/pi/semafor/public/images/webcam/webcam.png' ; // created by python
 
 
@@ -441,11 +447,12 @@ var python_options = {
   pythonPath: '/usr/bin/python',
   pythonOptions: ['-u'],
   scriptPath: '/usr/local/bin',
-  args: ['demos  -c /usr/local/bin/mydetails   -s 34638015371  SEMnodeMsg']
+//  args: [ 'demos',  '-c', '/usr/local/bin/mydetails',  '-s', '34638015371',  'Sebas : ho envio des el NODEJS' ]
+//  args: [ 'demos',  '-c', '/usr/local/bin/mydetails',  '-s', '34633611757',  'Albert : ho envio des el NODEJS' ]
+  args: [ 'demos',  '-c', '/usr/local/bin/mydetails',  '-s', '34616115628',  'Luis : enviado desde NODEJS' ]
 } ;
 
-//     PythonShell.run( 'yowsup-cli', function( err, results ) {
-     PythonShell.run( '/usr/local/bin/yowsup-cli', function( err, results ) {
+     PythonShell.run( 'yowsup-cli', python_options, function( err, results ) {
           if ( err ) throw err ;
           console.log( '(+) Snd WhatsApp Python results are (%j).', results ) ; // results is an array consisting of messages collected during execution
           var sndRC = String( results ) ;                           // convert to string
@@ -481,7 +488,7 @@ var python_options = {
 
 // esborrem primer la foto anterior - tenim el seu nom a png_File ?
 
-     PythonShell.run( '2_foto.py', function( err, results ) {
+     PythonShell.run( '2_foto.py', python_options, function( err, results ) {
           if ( err ) throw err ;
           console.log( '(+) Python results are (%j).', results ) ; // results is an array consisting of messages collected during execution
           png_File = String( results ) ;                           // convert to string
