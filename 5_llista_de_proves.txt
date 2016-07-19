@@ -1,5 +1,17 @@
 .
- (.) engegar llum verd + apagar llum verd, 3 vegades
+ (.) llum verd : engegar + apagar, 3 vegades
+ (.) llum verd : posar intermitent + aturar, 3 vegades
 .
-
+ idem GROC
+ idem VERMELL
+ idem 3 LLUMS
+.
+ VAR - engegar + aturar, 3 cops
+ RAV - engegar + aturar, 3 cops
+.
+ (.) fer una foto
+ (.) mostrar una foto
+ (.) netejar pantalla
+ (.) esborrar fitxer
+.
 

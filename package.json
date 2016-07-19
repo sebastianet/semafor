@@ -16,7 +16,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "sudo  node  1-sem.js"
+    "test": "sudo  node  1_sem.js"
   },
   "author": "",
   "license": "ISC"

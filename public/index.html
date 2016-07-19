@@ -20,67 +20,8 @@
 
 <div id="container">
 
-<div id="header">
-    <h1> Benvingut a la web de manegament del sem&agrave;for </h1>
-</div>
-
-<hr>
-
-<div id="navegacio">
-
-<h2> Navegaci&oacute; </h2>
-
-<ul>
-
- <li> Llum verd (18) : 
-<a href="#" id="clk_Encendre_Verd">engegar</a>
-/ 
-<a href="#" id="clk_Apagar_Verd">apagar</a>
-/
-<a href="#" id="clk_engegar_Intermitent_Verd">intermitent</a>
-
- <li> Llum groc (15) :
-<a href="#" id="clk_Encendre_Groc">engegar</a>
-/
-<a href="#" id="clk_Apagar_Groc">apagar</a>
-/
-<a href="#" id="clk_engegar_Intermitent_Groc">intermitent</a>
-
- <li> Llum vermell (16) :
-<a href="#" id="clk_Encendre_Vermell">engegar</a>
-/
-<a href="#" id="clk_Apagar_Vermell">apagar</a>
-/
-<a href="#" id="clk_engegar_Intermitent_Vermell">intermitent</a>
-
- <li> Els 3 llums :
-<a href="#" id="clk_Encendre_Tres_Llums">engegar</a>
-/ apagar /
-<a href="#" id="clk_engegar_Intermitent_Tres_Lums">intermitent</a>
-
- <li> Sequencia Verd -> Groc -> Vermell : 
- <a href="#" id="clkActivar">engegar</a>
- /
- <a href="#" id="clkAturar">apagar</a>
-
- <li> Velocitat de repetici&oacute; :
-
-<a href="#" id="clkRepeticioLenta">baixa</a>
-/
-<a href="#" id="clkRepeticioNormal">mitjana</a>
-/ 
-<a href="#" id="clkRepeticioRapida">rapida</a>
-
- <li> Foto : primer
-<a href="#" id="clkFoto_fer">fer-la</a> (compte : triga 3-4 segons) i despres <a href="#" id="clkFoto_show">mostrar-la</a>.
-Podem
-<a href="#" id="clkFoto_netejar">netejar</a> la pantalla.
-O
-<a href="#" id="clkFoto_esborrar">esborrar</a> el fitxer !
-Esborrar cache : Ctrl + Shift + Delete
-
-</ul>
-
+<div id="my_header">
+Web del sem&agrave;for 
 </div>
 
 <hr>
@@ -88,25 +29,98 @@ Esborrar cache : Ctrl + Shift + Delete
 <table class="timg">
 <tr>
 <td width="60%">
-<h2> StatusQuo :</h2>
 
-<div id="contingut">
- &nbsp; estatus
-</div>
+<ul>
+
+ <li> Verd : 
+<a href="#" id="clk_Encendre_Verd">ON</a>
+/ 
+<a href="#" id="clk_Apagar_Verd">off</a>
+/
+<a href="#" id="clk_engegar_Intermitent_Verd">intermitent</a>
+
+ <li> Groc :
+<a href="#" id="clk_Encendre_Groc">ON</a>
+/
+<a href="#" id="clk_Apagar_Groc">off</a>
+/
+<a href="#" id="clk_engegar_Intermitent_Groc">intermitent</a>
+
+ <li> Vermell :
+<a href="#" id="clk_Encendre_Vermell">ON</a>
+/
+<a href="#" id="clk_Apagar_Vermell">off</a>
+/
+<a href="#" id="clk_engegar_Intermitent_Vermell">intermitent</a>
+
+
+ <li> 3 llums :
+<a href="#" id="clk_Encendre_Tres_Llums">ON</a>
+/
+<a href="#" id="clk_Apagar_Tres_Llums">off</a>
+/
+<a href="#" id="clk_engegar_Intermitent_Tres_Lums">intermitent</a>
+
+
+ <li> Seq VAR : 
+ <a href="#" id="clkActivar_VAR">ON</a>
+ /
+ <a href="#" id="clkAturar_VAR">off</a>
+
+ <li> Seq (RAV) : 
+ <a href="#" id="clkActivar_RAV">ON</a>
+ /
+ <a href="#" id="clkAturar_RAV">off</a>
+
+ <li> Random :
+ <a href="#" id="clkActivar_random">ON</a>
+ /
+ <a href="#" id="clkAturar_random">off</a>
+
+ <li> &nbsp;
+
+ <li> Velocitat :
+
+<a href="#" id="clkRepeticioLenta">baixa</a>
+/
+<a href="#" id="clkRepeticioNormal">mitja</a>
+/ 
+<a href="#" id="clkRepeticioRapida">rapida</a>
+
+<li> &nbsp;
+
+<li> Foto : 
+<a href="#" id="clkFoto_fer">fer-la</a> (3 sg) + <a href="#" id="clkFoto_show">mostrar-la</a>.
+<br>
+<a href="#" id="clkFoto_show_directe">Directe</a>.
+<br>
+<a href="#" id="clkFoto_netejar">Netejar</a> la pantalla.
+<br>
+O
+<a href="#" id="clkFoto_esborrar_fitxer">esborrar</a> el fitxer !
+<br>
+CLR cache : Ctrl + Shift + Delete
+
+<li> enviar
+<a href="#" id="clk_Enviar_Msg_WhatsApp">missatge via whatsapp</a>
+
+</ul>
+
 
 <td width="40%">
 
 <div id="imatge_div">
- <img id="imatge_webcam" src="/images/blanc.jpg" width="300" height="250">
-Imatge de la web-cam [300x250]
+ <img id="imatge_webcam" src="/images/blanc.jpg" width="640" height="480">
+<br>
+web-cam [640x480]
 </div>
 
 </table>
 
 <hr>
 
-<div id="anuncis">
- Espai reservat per anuncis, noticies, etc
+<div id="contingut">
+ Espai reservat per estatus, anuncis, noticies, etc
 </div>
 
 <hr>
@@ -127,7 +141,7 @@ Imatge de la web-cam [300x250]
 
  <td>
  
- Help | <a href="#" id="clkId">Id</a>
+ Help | Bye | <a href="#" id="clkId">Id</a>
 
  <td>
   <div id="my_date">
@@ -161,26 +175,61 @@ $( function() { // DOM ready
 $( "#clkId" ).click( function() {
     $.get( '/identificar', function( page ) {
         console.log( '*** index - demanem al server IDENTIFICAR.' ) ;
-        $( "#anuncis" ).html( page ) ; // show received HTML at specific <div>
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
     }) ; // get(activar)
 }) ; // identificar
 
 
-$( "#clkActivar" ).click( function() {
-    $.get( '/activar-sequencia-VAR', function( page ) {
+$( "#clk_Enviar_Msg_WhatsApp" ).click( function() {
+    $.post( '/enviar_msg_whatsapp/ParamTfNum="638015371"', function( page ) {
+        console.log( '*** index - demanem al server ENVIAR MSG WHATSAPP.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ; // post(activar)
+}) ; // enviar msg whatsapp
+
+
+$( "#clkActivar_VAR" ).click( function() {
+    $.post( '/menu_engegar_sequencia/Tipus=sequencia_VAR', function( page ) {
         console.log( '*** index - demanem al server ACTIVAR sequencia VAR.' ) ;
         $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
-    }) ; // get(activar)
+    }) ; // post(activar)
 }) ; // activar sequencia VAR
 
+$( "#clkActivar_RAV" ).click( function() {
+    $.post( '/menu_engegar_sequencia/Tipus=sequencia_RAV', function( page ) {
+        console.log( '*** index - demanem al server ACTIVAR sequencia RAV.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ; // post(activar)
+}) ; // activar sequencia RAV
 
-$( "#clkAturar" ).click( function() {
-    $.get( '/parar-sequencia-VAR', function( page ) {
+$( "#clkActivar_random" ).click( function() {
+    $.post( '/menu_engegar_sequencia/Tipus=sequencia_random', function( page ) {
+        console.log( '*** index - demanem al server ACTIVAR sequencia RANDOM.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ; // post(activar)
+}) ; // activar sequencia RANDOM
+
+
+$( "#clkAturar_VAR" ).click( function() {
+    $.post( '/menu_apagar_llum/Color=seq_var', function( page ) {
         console.log( '*** index - demanem al server ATURAR sequencia VAR.' ) ;
         $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
-    }) ; // get(aturar)
+    }) ; // post(aturar)
 }) ; // aturar sequencia VAR
 
+$( "#clkAturar_RAV" ).click( function() {
+    $.post( '/menu_apagar_llum/Color=seq_rav', function( page ) {
+        console.log( '*** index - demanem al server ATURAR sequencia RAV.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ; // post(aturar)
+}) ; // aturar sequencia RAV
+
+$( "#clkAturar_random" ).click( function() {
+    $.post( '/menu_apagar_llum/Color=seq_random', function( page ) {
+        console.log( '*** index - demanem al server ATURAR sequencia RANDOM.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ; // post(aturar)
+}) ; // aturar sequencia RANDOM
 
 $( "#clk_Apagar_Verd" ).click( function() {
     $.post( '/menu_apagar_llum/Color=verd', function( page ) {
@@ -202,6 +251,13 @@ $( "#clk_Apagar_Vermell" ).click( function() {
         $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
     }) ; 
 }) ; // apagar vermell
+
+$( "#clk_Apagar_Tres_Llums" ).click( function() {
+    $.post( '/menu_apagar_llum/Color=tres_llums', function( page ) {
+        console.log( '*** index - demanem al server APAGAR 3 LLUMS.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ; 
+}) ; // apagar 3 llums 
 
  
 $( "#clk_Encendre_Verd" ).click( function() {
@@ -235,7 +291,7 @@ $( "#clk_Encendre_Tres_Llums" ).click( function() {
 
 
 $( "#clk_engegar_Intermitent_Verd" ).click( function() {
-    $.post( '/menu_engegar_sequencia/Tipus_intermitent_verd', function( page ) {
+    $.post( '/menu_engegar_sequencia/Tipus=intermitent_verd', function( page ) {
         console.log( '*** index - demanem al server engegar INTERMITENT VERD.' ) ;
         $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
     }) ;
@@ -286,8 +342,8 @@ $( "#clkRepeticioLenta" ).click( function() {
 }) ; // periode lent
 
 
-$( "#clkFoto_esborrar" ).click( function() {
-    $.get( '/foto_esborrar', function( page ) {
+$( "#clkFoto_esborrar_fitxer" ).click( function() {
+    $.get( '/foto_esborrar_fitxer', function( page ) {
         console.log( '*** index - demanem al server ESBORRAR la foto.' ) ;
         $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
     }) ; // get(activar)
@@ -295,14 +351,18 @@ $( "#clkFoto_esborrar" ).click( function() {
 
 
 $( "#clkFoto_netejar" ).click( function() {
+    console.log( '*** index - netejar foto posant-ne una de fixe.' ) ;
     $( "#imatge_webcam" ).attr( 'src', '/images/1-webcam.png' ) ;
-    var szOut = 'netegem el espai de la foto' ;
+
+// width="300" height="250">
+
+    var szOut = '+++ netegem el espai de la foto, posant-hi /images/1-webcam.png' ;
     $( "#contingut" ).html( szOut ) ; // show this HTML at specific <div>
 }) ; // netejar foto
 
 
 $( "#clkFoto_show_directe" ).click( function() {
-    var szFileFoto = '/images/webcam.png' ;
+    var szFileFoto = '/images/directe.jpg' ;
     console.log( '*** index - MOSTREM una foto (%s).', szFileFoto ) ;
     $( "#imatge_webcam" ).attr( 'src', szFileFoto ) ;
     var szOut = 'foto (' + szFileFoto + ') amostrada' ;

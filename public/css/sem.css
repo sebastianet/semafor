@@ -4,17 +4,17 @@
    a un ID "nom"    li correspon un "#nom"
 */
 
-#anuncis {
+#contingut {
     border: 1px solid blue ;
     background: #a0a0a0 ;
     text-align: center ;
  }
 
-#contingut {
+#my_header {
     text-align: center ;
  }
 
-#my_date{
+#my_date {
     text-align: center ;
     color: green ;
  }
@@ -22,6 +22,7 @@
 .timg {
     border: 1px solid green ;
     width: 100% ;
+    background-color: #A0A0A0 ;
  }
 
 .timg TD {
@@ -39,7 +40,11 @@
  }
 
 .imatge {
-    background: #F0F0F0 ;
+    background: #F0F000 ;
+ }
+
+#imatge_div {
+    border: 1px solid blue ;
  }
 
 H1, H2, H3, H4 {
