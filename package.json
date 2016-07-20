@@ -4,6 +4,7 @@
   "description": "",
   "main": "1-sem.js",
   "dependencies": {
+    "body-parser": "^1.15.2",
     "connect": "^3.4.1",
     "express": "^4.14.0",
     "morgan": "^1.7.0",

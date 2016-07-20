@@ -10,7 +10,7 @@
  <link rel="stylesheet" type="text/css" href="css/sem.css" />
 
  <title> Semafor d'en JA </title>
- <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+ <script src="https://code.jquery.com/jquery-3.0.0.js"></script>
  
 </head>
 
@@ -20,15 +20,34 @@
 
 <div id="container">
 
-<div id="my_header">
-Web del sem&agrave;for 
+<div id="peudepagina">
+ <table class="tpeu">
+ <tr>
+
+ <td width="70%">
+<center>
+*** Web del sem&agrave;for ***
+</cente>
+
+ <td>
+ 
+ Login | <a href="#" id="clkId">Id</a> | Bye | Help
+
+<!--
+ <td>
+  <div id="my_date">
+  &nbsp;
+  </div>
+-->
+
+ </table>
 </div>
 
 <hr>
 
 <table class="timg">
 <tr>
-<td width="60%">
+<td>
 
 <ul>
 
@@ -72,47 +91,44 @@ Web del sem&agrave;for
  /
  <a href="#" id="clkAturar_RAV">off</a>
 
- <li> Random :
+ <li> Random 3 :
  <a href="#" id="clkActivar_random">ON</a>
  /
  <a href="#" id="clkAturar_random">off</a>
 
- <li> &nbsp;
+ <li> Random 8 : ON / off
 
- <li> Velocitat :
+ <li> Velocitat
 
 <a href="#" id="clkRepeticioLenta">baixa</a>
 /
 <a href="#" id="clkRepeticioNormal">mitja</a>
 / 
-<a href="#" id="clkRepeticioRapida">rapida</a>
-
-<li> &nbsp;
+<a href="#" id="clkRepeticioRapida">alta</a>
 
 <li> Foto : 
-<a href="#" id="clkFoto_fer">fer-la</a> (3 sg) + <a href="#" id="clkFoto_show">mostrar-la</a>.
+<a href="#" id="clkFoto_fer">fer</a> (3 sg) + <a href="#" id="clkFoto_show">mostrar</a>.
 <br>
-<a href="#" id="clkFoto_show_directe">Directe</a>.
+<a href="#" id="clkFoto_netejar">Netejar pantalla</a>.
+<a href="#" id="clkFoto_esborrar_fitxer">Esborrar fitxer</a>.
 <br>
-<a href="#" id="clkFoto_netejar">Netejar</a> la pantalla.
-<br>
-O
-<a href="#" id="clkFoto_esborrar_fitxer">esborrar</a> el fitxer !
-<br>
-CLR cache : Ctrl + Shift + Delete
+CLR cache : Ctrl+Shift+Delete
 
 <li> enviar
-<a href="#" id="clk_Enviar_Msg_WhatsApp">missatge via whatsapp</a>
+<a href="#" id="clk_Enviar_Msg_WhatsApp">missatge WhatsApp</a> :
+<label>Tf</label>
+<input id="wtel">
+<label>Txt</label>
+<textarea id="wtxt"></textarea>
+<button id="wsend">Enviar</button>
 
 </ul>
 
 
-<td width="40%">
+<td width="350px">
 
 <div id="imatge_div">
- <img id="imatge_webcam" src="/images/blanc.jpg" width="640" height="480">
-<br>
-web-cam [640x480]
+ <img id="imatge_webcam" src="/images/blanc.jpg" width="320" height="240">
 </div>
 
 </table>
@@ -121,34 +137,6 @@ web-cam [640x480]
 
 <div id="contingut">
  Espai reservat per estatus, anuncis, noticies, etc
-</div>
-
-<hr>
-
-<div id="peudepagina">
- <table class="tpeu">
- <tr>
-
- <td>
- <a href="#">Privacy</a> | <a href="#">Terms</a>
-
- <td>
- Valid <a href="http://validator.w3.org/check?uri=referer">XHTML</a> | Valid <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a>
- 
- <td>
- &copy; 2016 &amp; 2015, <a href="https://github.com/sebastianet/wCDT">Sebas</a> @
-<a href="https://github.com/sebastianet/semafor">git</a>
-
- <td>
- 
- Help | Bye | <a href="#" id="clkId">Id</a>
-
- <td>
-  <div id="my_date">
-  &nbsp;
-  </div>
-
- </table>
 </div>
 
 </div>
@@ -165,11 +153,31 @@ $( function() { // DOM ready
         $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
     }) ; // get(initial.htm)
 
-// posar la data actual a baix a l'esquerra - aixi diferenciem re-loads - "Now is"
-    var szAra = 'Timestamp [' + (new Date).yyyymmdd() +', '+ (new Date).hhmmss() + ']' ;
-    $( "#my_date" ).html( szAra ) ; // show actual date
+// posar la data actual - aixi diferenciem re-loads - "Now is"
+//    var szAra = 'Timestamp [' + (new Date).yyyymmdd() +', '+ (new Date).hhmmss() + ']' ;
+//    $( "#my_date" ).html( szAra ) ; // show actual date
 
 } ) ; // DOM ready
+
+
+$( function() {
+
+    $( '#wsend' ).click( function() {
+        var wdata = {
+            wdtel: $( '#wtel' ).val(),
+            wdtxt: $( '#wtxt' ).val()
+        } ; // wdata
+
+// var wurl = '/enviar_msg_whatsapp/ParamTfNum=' + wdata.wdtel ;
+var wurl = '/enviar_msg_whatsapp' ;
+        console.log( '*** URL (' + wurl + ').' ) ;
+
+//      $.get( wurl, wdata, function() {
+        $.post( wurl, wdata, function( page ) {
+            console.log( '*** mensaje enviado.' ) ;
+        } ) ; // get
+    } ) ; // click
+} ) ; // send
 
 
 $( "#clkId" ).click( function() {
@@ -181,7 +189,7 @@ $( "#clkId" ).click( function() {
 
 
 $( "#clk_Enviar_Msg_WhatsApp" ).click( function() {
-    $.post( '/enviar_msg_whatsapp/ParamTfNum="34638015371"', function( page ) {
+    $.post( '/enviar_msg_whatsapp/ParamTfNum=34638015371', function( page ) {
         console.log( '*** index - demanem al server ENVIAR MSG WHATSAPP.' ) ;
         $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
     }) ; // post(activar)
@@ -351,21 +359,23 @@ $( "#clkFoto_esborrar_fitxer" ).click( function() {
 
 
 $( "#clkFoto_netejar" ).click( function() {
-    console.log( '*** index - netejar foto posant-ne una de fixe.' ) ;
     $( "#imatge_webcam" ).attr( 'src', '/images/1-webcam.png' ) ;
-
-// width="300" height="250">
-
+// width="320" height="240">
     var szOut = '+++ netegem el espai de la foto, posant-hi /images/1-webcam.png' ;
+    console.log( szOut ) ;
     $( "#contingut" ).html( szOut ) ; // show this HTML at specific <div>
 }) ; // netejar foto
 
 
 $( "#clkFoto_show_directe" ).click( function() {
+
+// <br>
+// <a href="#" id="clkFoto_show_directe">Directe</a>.
+
     var szFileFoto = '/images/directe.jpg' ;
-    console.log( '*** index - MOSTREM una foto (%s).', szFileFoto ) ;
     $( "#imatge_webcam" ).attr( 'src', szFileFoto ) ;
-    var szOut = 'foto (' + szFileFoto + ') amostrada' ;
+    var szOut = '*** index mostrar foto directe (' + szFileFoto + ')' ;
+    console.log( szOut ) ;
     $( "#contingut" ).html( szOut ) ; // show this HTML at specific <div>
 }) ; // mostrar foto
 
