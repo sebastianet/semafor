@@ -17,6 +17,8 @@
 // 1.0.l - ramdom color
 // 1.0.m - enviem missatges whatsapp des python
 // 1.0.n - enviem missatges whatsapp des el browser client
+// 1.0.o - engegar l'aplicacio en engegar RASPALL : /etc/rc.local
+// 1.0.p - sequencia random-8
 
 
 // Conexionat del GPIO :
@@ -25,7 +27,7 @@
 //     el 'green'  correspon al pin numero 18, cable blanc - k_Verd
 
 // How to run the app :
-//     Server : engegar amb 'sudo node 1-sem.js'
+//     Server : engegar amb 'sudo node 1-sem.js' - veure /etc/rc.local
 //     Client intern : apuntar el browser a http://192.168.1.123:1212
 //     Client extern :                      http://88.18.117.86:9009
 
@@ -33,8 +35,8 @@
 //     http://192.168.1.123:1212
 //     http://192.168.1.123:1212/activar-sequencia-VAR
 //     http://192.168.1.123:1212/parar-sequencia-VAR
-//     http://192.168.1.123:1212/mostrar-foto
-//     http://192.168.1.123:1212/hacer-foto
+//    curl "http://192.168.1.123:1212/fer_foto"
+//    curl "http://192.168.1.123:1212/mostrar_foto"
 
 // Documentacio :
 //     projecte "base"        : https://github.com/sebastianet/wCDT
@@ -49,19 +51,20 @@
 //         rc 1               : https://github.com/tgalal/yowsup/issues/1702
 
 // Temes pendents :
+//     (*) enlloc de console.log() fer "bitacora(szOut)" per afegir timestamp a tots de cop i volta
 //     (*) abans de fer una foto, esborrar la anterior (encara en tenim el nom)
-//     (*) cron - tasca "netejar"
-//     (*) obrir el router per accedir el client des Moscu - http://usuaris.tinet.cat/sag/rspi3.htm#rspi_obrir_ports
-//     (*) obrir el router per actualitzar el software via SSH al port 22
 //     (*) provar des un mobil - la pantalla es molt petita !
 //     (*) tancar l'aplicacio des el client
-//     (*) engegar l'aplicacio en engegar el Raspi
 //     (*) enviat missatge whatsapp amb una imatge des el browser
 //     (*) identificar el usuari al client
 //     (*) random(3 bits) -> 8 valors
 //     (*) fer LOGON() obligatori i fer una trassa de IPs que entren
+//     (*) cron - tasca "netejar"
+//     (*) obrir el router per accedir el client des Moscu - http://usuaris.tinet.cat/sag/rspi3.htm#rspi_obrir_ports
+//     (*) obrir el router per actualitzar el software via SSH al port 22
 
 // Pla de proves de correcte funcionament : 5_llista_de_proves.txt
+// Descripcio del contingut global : /home/pi/contingut.txt
 
 // =========================================================================
 
@@ -94,7 +97,7 @@ var Q_sequenciador  = 0 ;               // estat del sequenciador := aturat ;
 var myIntervalObject ;                  // used by clearInterval.
 var myIntervalValue = 1000 ;            // slow = 3000, normal = 1000, fast = 500.
 var szResultat      = '' ;              // console and client return string
-var myVersio        = 'v1.0.n' ;        // version identifier
+var myVersio        = 'v1.0.p' ;        // version identifier
 var png_File        = '/home/pi/semafor/public/images/webcam/webcam.png' ; // created by python
 
 
@@ -297,11 +300,78 @@ var iNum = 0 ;
           case 15:
                iNum = Gen_Random_0toMax( 2 ) ;                       // get a velue in [0..2]
                console.log( '>>> random color (%s) in [0..2].', iNum ) ;
+
+               if ( iNum == 2 ) {                   // vermell
+                    apagarLuz( k_Verd ) ;
+                    apagarLuz( k_Groc ) ;
+                    encenderLuz( k_Vermell ) ;
+               } else {
+                    if ( iNum == 1 ) {              // groc
+                         apagarLuz( k_Verd ) ;
+                         encenderLuz( k_Groc ) ;
+                         apagarLuz( k_Vermell ) ;
+                    } else {                        // verd
+                         encenderLuz( k_Verd ) ;
+                         apagarLuz( k_Groc ) ;
+                         apagarLuz( k_Vermell ) ;
+                    } ; // 0
+               } ; // 2
           break ; // case 15
 
           case 16:
                iNum = Gen_Random_0toMax( 7 ) ;                       // get a velue in [0..7]
                console.log( '>>> random color (%s) in [0..7].', iNum ) ;
+
+               switch ( iNum ) { // VAR
+
+                    case 1:
+                         apagarLuz( k_Verd ) ;
+                         apagarLuz( k_Groc ) ;
+                         encenderLuz( k_Vermell ) ;
+                    break ; // case 1
+
+                    case 2:
+                         apagarLuz( k_Verd ) ;
+                         encenderLuz( k_Groc ) ;
+                         apagarLuz( k_Vermell ) ;
+                    break ; // case 2
+
+                    case 3:
+                         apagarLuz( k_Verd ) ;
+                         encenderLuz( k_Groc ) ;
+                         encenderLuz( k_Vermell ) ;
+                    break ; // case 3
+
+                    case 4:
+                         encenderLuz( k_Verd ) ;
+                         apagarLuz( k_Groc ) ;
+                         apagarLuz( k_Vermell ) ;
+                    break ; // case 4
+
+                    case 5:
+                         encenderLuz( k_Verd ) ;
+                         apagarLuz( k_Groc ) ;
+                         encenderLuz( k_Vermell ) ;
+                    break ; // case 5
+
+                    case 6:
+                         encenderLuz( k_Verd ) ;
+                         encenderLuz( k_Groc ) ;
+                         apagarLuz( k_Vermell ) ;
+                    break ; // case 6
+
+                    case 7:
+                         encenderLuz( k_Verd ) ;
+                         encenderLuz( k_Groc ) ;
+                         encenderLuz( k_Vermell ) ;
+                    break ; // case 7
+
+                    default: // supose 0 - all lights OFF
+                         apagarLuz( k_Verd ) ;
+                         apagarLuz( k_Groc ) ;
+                         apagarLuz( k_Vermell ) ;
+               } ; // switch iNum
+
           break ; // case 16
 
           default:
@@ -444,21 +514,15 @@ var python_options = {
   pythonPath: '/usr/bin/python',
   pythonOptions: ['-u'],
   scriptPath: '/usr/local/bin',
-//  args: [ 'demos',  '-c', '/usr/local/bin/mydetails',  '-s', '34638015371',  'Sebas : ho envio des el NODEJS' ]
-//  args: [ 'demos',  '-c', '/usr/local/bin/mydetails',  '-s', '34633611757',  'Albert : ho envio des el NODEJS' ]
-//  args: [ 'demos',  '-c', '/usr/local/bin/mydetails',  '-s', '34670559696',  'JALL : enviat des NODEJS al Raspi' ]
-//  args: [ 'demos',  '-c', '/usr/local/bin/mydetails',  '-s', '34616115628',  'Luis : enviado desde NODEJS' ]
-
-  args: [ 'demos',  '-c', '/usr/local/bin/mydetails',  '-s', '34666777888',  'Sebas : ho envio des el NODEJS' ]
-
+  args: [ 'demos',  '-c', '/usr/local/bin/mydetails',  '-s', '34666777888',  'Envio des NODEJS' ]
 } ;
 
      console.log( 'posted ' + JSON.stringify( req.body ) ) ;
 
 // agafar num tf i texte del BODY
-
+     
      var WhatsApp_Tf_Number = req.body.wdtel ;
-     var WhatsApp_Msg_Text  = req.body.wdtxt ;
+     var WhatsApp_Msg_Text  = '[' + (new Date).hhmmss() + '] ' + req.body.wdtxt ;
 
      console.log( '>>> Menu enviar msg WhatsApp via python. Tf REQ param is (' + WhatsApp_Tf_Number + '). ' ) ;
 
@@ -502,7 +566,7 @@ var python_options = {
   args: ['value1', 'value2', 'value3']
 } ;
 
-     console.log( '>>> Menu hacer foto via Python.' ) ;
+     console.log( '>>> Menu fer foto via Python.' ) ;
 
 // esborrem primer la foto anterior - tenim el seu nom a png_File ?
 
@@ -595,9 +659,14 @@ app.post( '/menu_engegar_sequencia/Tipus=:res_tipus_sequencia', function (req, r
                Q_sequenciador = 12 ;
           break ;
 
-          case 'sequencia_random':
-               szResultat += '+++ sequencia Random. T (' + myIntervalValue + ').' ;
+          case 'sequencia_random_de_tres':
+               szResultat += '+++ sequencia Random (0..2). T (' + myIntervalValue + ').' ;
                Q_sequenciador = 15 ;
+          break ;
+
+          case 'sequencia_random_de_vuit':
+               szResultat += '+++ sequencia Random (0..7). T (' + myIntervalValue + ').' ;
+               Q_sequenciador = 16 ;
           break ;
 
           default:

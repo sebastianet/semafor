@@ -92,11 +92,14 @@
  <a href="#" id="clkAturar_RAV">off</a>
 
  <li> Random 3 :
- <a href="#" id="clkActivar_random">ON</a>
+ <a href="#" id="clkActivar_random_tres">ON</a>
  /
- <a href="#" id="clkAturar_random">off</a>
+ <a href="#" id="clkAturar_random_tres">off</a>
 
- <li> Random 8 : ON / off
+ <li> Random 8 :
+ <a href="#" id="clkActivar_random_vuit">ON</a>
+ /
+ <a href="#" id="clkAturar_random_vuit">off</a>
 
  <li> Velocitat
 
@@ -115,11 +118,11 @@
 CLR cache : Ctrl+Shift+Delete
 
 <li> enviar
-<a href="#" id="clk_Enviar_Msg_WhatsApp">missatge WhatsApp</a> :
+<a href="#" id="clk_Enviar_Msg_WhatsApp">WhatsApp</a> :
 <label>Tf</label>
-<input id="wtel">
+<input id="wtel" type="text" size="10" placeholder="34666000777">
 <label>Txt</label>
-<textarea id="wtxt"></textarea>
+<input id="wtxt" type="text" size="10" placeholder="enter text">
 <button id="wsend">Enviar</button>
 
 </ul>
@@ -162,17 +165,16 @@ $( function() { // DOM ready
 
 $( function() {
 
+var wurl = '/enviar_msg_whatsapp' ;
+
     $( '#wsend' ).click( function() {
         var wdata = {
             wdtel: $( '#wtel' ).val(),
             wdtxt: $( '#wtxt' ).val()
         } ; // wdata
 
-// var wurl = '/enviar_msg_whatsapp/ParamTfNum=' + wdata.wdtel ;
-var wurl = '/enviar_msg_whatsapp' ;
-        console.log( '*** URL (' + wurl + ').' ) ;
+        console.log( '*** POST URL (' + wurl + ').' ) ;
 
-//      $.get( wurl, wdata, function() {
         $.post( wurl, wdata, function( page ) {
             console.log( '*** mensaje enviado.' ) ;
         } ) ; // get
@@ -187,13 +189,13 @@ $( "#clkId" ).click( function() {
     }) ; // get(activar)
 }) ; // identificar
 
-
-$( "#clk_Enviar_Msg_WhatsApp" ).click( function() {
-    $.post( '/enviar_msg_whatsapp/ParamTfNum=34638015371', function( page ) {
-        console.log( '*** index - demanem al server ENVIAR MSG WHATSAPP.' ) ;
-        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
-    }) ; // post(activar)
-}) ; // enviar msg whatsapp
+// --- ho fem amb el CLICK() del boto
+// $( "#clk_Enviar_Msg_WhatsApp" ).click( function() {
+//     $.post( '/enviar_msg_whatsapp/ParamTfNum=34638015371', function( page ) {
+//         console.log( '*** index - demanem al server ENVIAR MSG WHATSAPP.' ) ;
+//         $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+//     }) ; // post(activar)
+// }) ; // enviar msg whatsapp
 
 
 $( "#clkActivar_VAR" ).click( function() {
@@ -210,12 +212,19 @@ $( "#clkActivar_RAV" ).click( function() {
     }) ; // post(activar)
 }) ; // activar sequencia RAV
 
-$( "#clkActivar_random" ).click( function() {
-    $.post( '/menu_engegar_sequencia/Tipus=sequencia_random', function( page ) {
-        console.log( '*** index - demanem al server ACTIVAR sequencia RANDOM.' ) ;
+$( "#clkActivar_random_tres" ).click( function() {
+    $.post( '/menu_engegar_sequencia/Tipus=sequencia_random_de_tres', function( page ) {
+        console.log( '*** index - demanem al server ACTIVAR sequencia RANDOM-3.' ) ;
         $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
     }) ; // post(activar)
-}) ; // activar sequencia RANDOM
+}) ; // activar sequencia RANDOM-3
+
+$( "#clkActivar_random_vuit" ).click( function() {
+    $.post( '/menu_engegar_sequencia/Tipus=sequencia_random_de_vuit', function( page ) {
+        console.log( '*** index - demanem al server ACTIVAR sequencia RANDOM-8.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ; // post(activar)
+}) ; // activar sequencia RANDOM-8
 
 
 $( "#clkAturar_VAR" ).click( function() {
@@ -232,12 +241,19 @@ $( "#clkAturar_RAV" ).click( function() {
     }) ; // post(aturar)
 }) ; // aturar sequencia RAV
 
-$( "#clkAturar_random" ).click( function() {
+$( "#clkAturar_random_tres" ).click( function() {
     $.post( '/menu_apagar_llum/Color=seq_random', function( page ) {
-        console.log( '*** index - demanem al server ATURAR sequencia RANDOM.' ) ;
+        console.log( '*** index - demanem al server ATURAR sequencia RANDOM-3.' ) ;
         $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
     }) ; // post(aturar)
-}) ; // aturar sequencia RANDOM
+}) ; // aturar sequencia RANDOM-3
+
+$( "#clkAturar_random_vuit" ).click( function() {
+    $.post( '/menu_apagar_llum/Color=seq_random', function( page ) {
+        console.log( '*** index - demanem al server ATURAR sequencia RANDOM-8.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ; // post(aturar)
+}) ; // aturar sequencia RANDOM-8
 
 $( "#clk_Apagar_Verd" ).click( function() {
     $.post( '/menu_apagar_llum/Color=verd', function( page ) {

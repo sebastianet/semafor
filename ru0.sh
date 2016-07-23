@@ -1,1 +1,1 @@
-sudo  node  1_sem.js
+sudo  node  /home/pi/semafor/1_sem.js 
