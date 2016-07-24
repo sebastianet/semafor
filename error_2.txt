@@ -1,0 +1,57 @@
+pi@raspberrypi-llovet:~/semafor $ ./ru0.sh
++++ +++ +++ +++ +++ +++ +++ +++ app SEM starts. Versio [v1.0.l], HN [raspberrypi-llovet], TimeStamp [2016/07/20].
+>>> App listening at http://192.168.1.123:1212
+00:25:36 Apagar luz (16). (---) Written OFF to pin (16).
+00:25:36 Apagar luz (18). (---) Written OFF to pin (18).
+00:25:36 Apagar luz (15). (---) Written OFF to pin (15).
+>>> Menu enviar msg WhatsApp via python. Tf param is ("34638015371").
+/home/pi/semafor/1_sem.js:455
+          if ( err ) throw err ;
+                     ^
+
+Error: INFO:yowsup.demos.sendclient.layer:Message sent
+
+    at PythonShell.parseError (/home/pi/semafor/node_modules/python-shell/index.js:190:17)
+    at terminateIfNeeded (/home/pi/semafor/node_modules/python-shell/index.js:98:28)
+    at ChildProcess.<anonymous> (/home/pi/semafor/node_modules/python-shell/index.js:88:9)
+    at emitTwo (events.js:100:13)
+    at ChildProcess.emit (events.js:185:7)
+    at Process.ChildProcess._handle.onexit (internal/child_process.js:204:12)
+pi@raspberrypi-llovet:~/semafor $
+
+
+
+
+pi@raspberrypi-llovet:~/semafor $ ./ru0.sh
++++ +++ +++ +++ +++ +++ +++ +++ app SEM starts. Versio [v1.0.m], HN [raspberrypi-llovet], TimeStamp [2016/07/20].
+>>> App listening at http://192.168.1.123:1212
+13:24:05 Apagar luz (15). (---) Written OFF to pin (15).
+13:24:05 Apagar luz (18). (---) Written OFF to pin (18).
+13:24:05 Apagar luz (16). (---) Written OFF to pin (16).
+>>> Menu enviar msg WhatsApp via python. Tf param is ("34638015371").
+(+) Snd WhatsApp Python ERR are ({"executable":"/usr/bin/python","options":["-u"],"script":"/usr/local/bin/yowsup-cli","args":["demos","-c","/usr/local/bin/mydetails","-s","34670559696","JALL : enviat des NODEJS al Raspi"],"exitCode":0}).
+/home/pi/semafor/1_sem.js:451
+          if ( err ) throw err ;
+                     ^
+
+Error: INFO:yowsup.demos.sendclient.layer:Message sent
+
+    at PythonShell.parseError (/home/pi/semafor/node_modules/python-shell/index.js:190:17)
+    at terminateIfNeeded (/home/pi/semafor/node_modules/python-shell/index.js:98:28)
+    at ChildProcess.<anonymous> (/home/pi/semafor/node_modules/python-shell/index.js:88:9)
+    at emitTwo (events.js:100:13)
+    at ChildProcess.emit (events.js:185:7)
+    at Process.ChildProcess._handle.onexit (internal/child_process.js:204:12)
+pi@raspberrypi-llovet:~/semafor $
+
+
+
+(+) Snd WhatsApp Python ERR are (
+{
+"executable":"/usr/bin/python",
+"options":["-u"],
+"script":"/usr/local/bin/yowsup-cli",
+"args":["demos","-c","/usr/local/bin/mydetails","-s","34670559696","JALL : enviat des NODEJS al Raspi"],
+"exitCode":0
+}
+).

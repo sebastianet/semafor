@@ -1,0 +1,19 @@
+pi@raspberrypi-llovet:~/semafor $ ./ru0.sh
++++ +++ +++ +++ +++ +++ +++ +++ app SEM starts. Versio [v1.0.l], HN [raspberrypi-llovet], TimeStamp [2016/07/19].
+>>> App listening at http://192.168.1.123:1212
+21:57:56 Apagar luz (15). (---) Written OFF to pin (15).
+21:57:56 Apagar luz (18). (---) Written OFF to pin (18).
+21:57:56 Apagar luz (16). (---) Written OFF to pin (16).
+>>> Menu enviar msg WhatsApp via python. Tf param is ("638015371").
+/home/pi/semafor/1_sem.js:453
+          if ( err ) throw err ;
+                     ^
+
+Error: process exited with code 1
+    at terminateIfNeeded (/home/pi/semafor/node_modules/python-shell/index.js:100:23)
+    at ChildProcess.<anonymous> (/home/pi/semafor/node_modules/python-shell/index.js:88:9)
+    at emitTwo (events.js:100:13)
+    at ChildProcess.emit (events.js:185:7)
+    at Process.ChildProcess._handle.onexit (internal/child_process.js:204:12)
+pi@raspberrypi-llovet:~/semafor $
+
