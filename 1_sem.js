@@ -19,6 +19,7 @@
 // 1.0.n - enviem missatges whatsapp des el browser client
 // 1.0.o - engegar l'aplicacio en engegar RASPALL : /etc/rc.local
 // 1.0.p - sequencia random-8
+// 1.0.q - separem client.js per posar ( logon / semafor / foto / whatsapp / help ) al mateix lloc
 
 
 // Conexionat del GPIO :
@@ -57,7 +58,6 @@
 //     (*) tancar l'aplicacio des el client
 //     (*) enviat missatge whatsapp amb una imatge des el browser
 //     (*) identificar el usuari al client
-//     (*) random(3 bits) -> 8 valors
 //     (*) fer LOGON() obligatori i fer una trassa de IPs que entren
 //     (*) cron - tasca "netejar"
 //     (*) obrir el router per accedir el client des Moscu - http://usuaris.tinet.cat/sag/rspi3.htm#rspi_obrir_ports
@@ -97,7 +97,7 @@ var Q_sequenciador  = 0 ;               // estat del sequenciador := aturat ;
 var myIntervalObject ;                  // used by clearInterval.
 var myIntervalValue = 1000 ;            // slow = 3000, normal = 1000, fast = 500.
 var szResultat      = '' ;              // console and client return string
-var myVersio        = 'v1.0.p' ;        // version identifier
+var myVersio        = 'v1.0.q' ;        // version identifier
 var png_File        = '/home/pi/semafor/public/images/webcam/webcam.png' ; // created by python
 
 

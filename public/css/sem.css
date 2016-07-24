@@ -35,6 +35,14 @@
     background: #E0E0E0 ;
  }
 
+.tsem {
+    border: 1px solid yellow ;
+ }
+
+.tsem td {
+    border: none ;
+ }
+
 .txtblanc {
     background-color: #FFFFFF ;
  }
