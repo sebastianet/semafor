@@ -1,12 +1,37 @@
 
-// $( function() {
-//     index_ready(); // DOM ready event
-// } ) ; // DOM ready
+// nova funcio yymmdd de Date() - at client
+Date.prototype.yyyymmdd = function () {
+        var yyyy = this.getFullYear().toString();
+        var mm   = (this.getMonth()+1).toString(); // getMonth() is zero-based
+        var dd   = this.getDate().toString();
+        return yyyy + '/' + (mm[1]?mm:"0"+mm[0]) + '/' + (dd[1]?dd:"0"+dd[0]);
+} ; // yyyymmd
 
+Date.prototype.hhmmss = function () {
+        function fixTime(i) {
+        return (i < 10) ? "0" + i : i;
+    }
+        var today = new Date(),
+            hh = fixTime( today.getHours() ),
+                mm = fixTime( today.getMinutes() ),
+                ss = fixTime( today.getSeconds() ) ;
+        var myHHMMSS = hh + ':' + mm + ':' + ss ;
+        return myHHMMSS ;
+} ; // hhmmss
 
-$( function() { // DOM ready
+// ========================================================================
 
-    console.log( '*** client DOM ready.' ) ;
+$( function() { // DOM ready event for main INDEX.HTML page
+
+    console.log( '*** index.html - DOM ready event.' ) ;
+
+// posem al SPA_data (we are a SPA) la sub-pagina inicial que veu el client : LOGON.HTM
+
+    $.get( '/logon.htm', function( page ) {
+        console.log( '*** Demanem al server LOGON.HTM, initial SPA text.' ) ;
+        $( "#SPA_data" ).html( page ) ; // show received HTML at specific <div>
+    }) ; // get(logon.htm)
+
     $.get( '/initial.htm', function( page ) {  // posem al CONTENT (we are a SPA) la sub-pagina INITAL.HTML
         console.log( '*** Demanem al server INITIAL.HTM, initial SPA text.' ) ;
         $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
@@ -18,34 +43,32 @@ $( function() { // DOM ready
 
 } ) ; // DOM ready
 
+// ========================================================================
 
-$( function() {
-
-var wurl = '/enviar_msg_whatsapp' ;
-
-    $( '#wsend' ).click( function() {
-        var wdata = {
-            wdtel: $( '#wtel' ).val(),
-            wdtxt: $( '#wtxt' ).val()
-        } ; // wdata
-
-        console.log( '*** POST URL (' + wurl + ').' ) ;
-
-        $.post( wurl, wdata, function( page ) {
-            console.log( '*** mensaje enviado.' ) ;
-        } ) ; // get
-    } ) ; // click
-} ) ; // send
+// Functions available to INDEX.HTML page
 
 
 $( "#clkId" ).click( function() {
+
     $.get( '/identificar', function( page ) {
         console.log( '*** index - demanem al server IDENTIFICAR.' ) ;
         $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
-    }) ; // get(activar)
+    }) ; // get(identificar)
+
 }) ; // identificar
 
-// --- ho fem amb el CLICK() del boto
+// ========================================================================
+
+// "page ready" events for all 5 pages we place in "SPA_data" div : SEM, FOTO, LOGON, WHATSAPP, HELP
+
+
+// ++++ (1) SEM_READY()
+
+function sem_ready() {
+
+    console.log( '*** sem.htm - DOM ready event.' ) ;
+
+// --- ho fem amb el CLICK() del boto, no amb el Link
 // $( "#clk_Enviar_Msg_WhatsApp" ).click( function() {
 //     $.post( '/enviar_msg_whatsapp/ParamTfNum=34638015371', function( page ) {
 //         console.log( '*** index - demanem al server ENVIAR MSG WHATSAPP.' ) ;
@@ -221,6 +244,12 @@ $( "#clkRepeticioLenta" ).click( function() {
     }) ;
 }) ; // periode lent
 
+} ; // sem_ready()
+
+
+// ++++ (2) FOTO_READY()
+
+function foto_ready() {
 
 $( "#clkFoto_esborrar_fitxer" ).click( function() {
     $.get( '/foto_esborrar_fitxer', function( page ) {
@@ -241,10 +270,8 @@ $( "#clkFoto_netejar" ).click( function() {
 
 $( "#clkFoto_show_directe" ).click( function() {
 
-// <br>
-// <a href="#" id="clkFoto_show_directe">Directe</a>.
-
     var szFileFoto = '/images/directe.jpg' ;
+
     $( "#imatge_webcam" ).attr( 'src', szFileFoto ) ;
     var szOut = '*** index mostrar foto directe (' + szFileFoto + ')' ;
     console.log( szOut ) ;
@@ -267,25 +294,112 @@ $( "#clkFoto_fer" ).click( function() {
     }) ; // get(activar)
 }) ; // fer foto
 
+} ; // foto_ready()
 
-// nova funcio yymmdd de Date() - at client
-Date.prototype.yyyymmdd = function () {                            
-	var yyyy = this.getFullYear().toString();                                    
-	var mm   = (this.getMonth()+1).toString(); // getMonth() is zero-based         
-	var dd   = this.getDate().toString();
-	return yyyy + '/' + (mm[1]?mm:"0"+mm[0]) + '/' + (dd[1]?dd:"0"+dd[0]);
-} ; // yyyymmd
 
-Date.prototype.hhmmss = function () {
-	function fixTime(i) {
-        return (i < 10) ? "0" + i : i;
+// ++++ (3) LOGON_READY()
+
+function logon_ready() {
+
+function preparemSendLogonClick() {
+
+    var logon_url = '/fer_logon' ;
+
+    $( '#click_logon_send' ).click( function() { // when user clicks on logon() then ...
+
+        var logon_data = {
+            logon_usr: $( '#luser' ).val(),
+            logon_pwd: $( '#lpwd' ).val()
+        } ;
+
+//        var szURL = '/logon_url/' + logon_data ;
+        var szURL = logon_url + '/nom_Logon=' + logon_data.logon_usr + '&pwd_Logon=' + logon_data.logon_pwd
+
+        console.log( 'LOGON() URL is ('+ szURL +').' ) ;
+
+//        $.post( logon_url, logon_data, function( page ){} ) ;
+
+        event.preventDefault() ; // the default action of the event will not be triggered. http://api.jquery.com/event.preventdefault/
+
+$.ajax({                         // as we can receive an "ok" or an "no ok" answer, we use the core $.ajax() method
+
+    url: szURL,                  // The URL for the request
+
+    data: {                      // The data to send (will be converted to a query string)
+        logon_data
+    },
+
+    type: "POST",                // Whether this is a POST or GET request
+
+    dataType : "html",           // The type of data we expect back
+
+    success: function(page){
+//        alert( "OK" ) ;
+        $( "#contingut" ).html( page ) ;
+
+// posem al SPA_data (we are a SPA) la seguent sub-pagina inicial que veu el client : SEM.HTM
+
+        $.get( '/sem.htm', function( page ) {
+            console.log( '*** Demanem al server SEM.HTM, page user sees after LOGON.' ) ;
+            $( "#SPA_data" ).html( page ) ; // show received HTML at specific <div>
+        }) ; // get(logon.htm)
+
+    },
+    statusCode: {
+        401: function() { $( "#contingut" ).html( (new Date).yyyymmdd() + '--- Logon() user('+ logon_data.logon_usr +') not authorized' ) },
+        404: function() { $( "#contingut" ).html( (new Date).yyyymmdd() + '--- Logon() unavailable' ) },
+        500: function() { $( "#contingut" ).html( (new Date).yyyymmdd() + '--- Logon() Server error' ) }
     }
-	var today = new Date(),
-	    hh = fixTime( today.getHours() ),
-		mm = fixTime( today.getMinutes() ),
-		ss = fixTime( today.getSeconds() ) ;
-	var myHHMMSS = hh + ':' + mm + ':' + ss ;
-	return myHHMMSS ;
-} ; // hhmmss
+})
 
+        return false ; // stop processing
+
+    } ) ; // click()
+
+} ; // preparemSendLogonClick()
+
+    preparemSendLogonClick() ; // set code to service logon click
+
+    console.log( '*** logon.htm - DOM ready event.' ) ;
+
+} ; // logon_ready()
+
+
+
+// ++++ (4) WHATSAPP_READY()
+
+function whatsapp_ready() {
+
+function preparemSend_Wassa_Tf_Txt_Click() {
+
+var wurl = '/enviar_msg_whatsapp' ;
+
+    $( '#wsend' ).click( function() {
+        var wdata = {
+            wdtel: $( '#wtel' ).val(),
+            wdtxt: $( '#wtxt' ).val()
+        } ; // wdata
+
+//        console.log( '*** POST URL (' + wurl + ').' ) ;
+
+        $.post( wurl, wdata, function( page ) {
+            console.log( '*** mensaje enviado.' ) ;
+        } ) ; // get
+    } ) ; // click
+} ; // preparemSend_Wassa_Tf_Txt_Click()
+
+    preparemSend_Wassa_Tf_Txt_Click() ; //
+
+    console.log( '*** whatsapp.htm - DOM ready event.' ) ;
+
+} ; // whatsapp_ready()
+
+
+// ++++ (5) HELP_READY()
+
+function help_ready() {
+
+    console.log( '*** help.htm - DOM ready event.' ) ;
+
+} ; // help_ready()
 

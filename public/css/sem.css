@@ -43,6 +43,11 @@
     border: none ;
  }
 
+.tSPAlogon {
+    border: 1px solid black ;
+    width: 100% ;
+ }
+
 .txtblanc {
     background-color: #FFFFFF ;
  }

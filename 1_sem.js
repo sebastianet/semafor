@@ -20,6 +20,7 @@
 // 1.0.o - engegar l'aplicacio en engegar RASPALL : /etc/rc.local
 // 1.0.p - sequencia random-8
 // 1.0.q - separem client.js per posar ( logon / semafor / foto / whatsapp / help ) al mateix lloc
+// 1.1.a - SPA amb logon/semafor/foto/whatsapp/help - codi a CLIENT.JS
 
 
 // Conexionat del GPIO :
@@ -97,7 +98,7 @@ var Q_sequenciador  = 0 ;               // estat del sequenciador := aturat ;
 var myIntervalObject ;                  // used by clearInterval.
 var myIntervalValue = 1000 ;            // slow = 3000, normal = 1000, fast = 500.
 var szResultat      = '' ;              // console and client return string
-var myVersio        = 'v1.0.q' ;        // version identifier
+var myVersio        = 'v1.1.a' ;        // version identifier
 var png_File        = '/home/pi/semafor/public/images/webcam/webcam.png' ; // created by python
 
 
@@ -407,7 +408,8 @@ function borrar_Fichero( nom_Fitxer_Esborrar ) {
 // Escriure un missatge inicial a la consola
 
     app.set( 'appHostname', require('os').hostname() ) ;
-    console.log( '+++ +++ +++ +++ +++ +++ +++ +++ app SEM starts. Versio [%s], HN [%s], TimeStamp [%s].', myVersio, app.get('appHostname'), (new Date).yyyymmdd() ) ;
+    console.log( '+++ +++ +++ +++ +++ +++ +++ +++ app SEM starts. Versio [%s], HN [%s], TimeStamp [%s-%s].',
+        myVersio, app.get('appHostname'), (new Date).yyyymmdd(), (new Date).hhmmss() ) ;
 
 
 // apaguem les 3 bombetes inicialment
@@ -504,6 +506,16 @@ app.post( '/menu_encendre_llum/Color=:res_color_llum', function ( req, res ) {
      res.status( 200 ).send( szResultat ) ; 
 
 } ) ; // menu encendre llum
+
+
+app.post( '/fer_logon/nom_Logon=:req_username&pwd_Logon=:req_pwd', function ( req, res ) {
+
+     console.log( '>>> Menu Logon() - usr (%s) pwd (%s).', req.params.req_username, req.params.req_pwd ) ;
+
+     szResultat = '+++ LOGON() OK' ;
+     res.status( 200 ).send( szResultat ) ; 
+
+} ) ; // fer logon
 
 
 // app.post( '/enviar_msg_whatsapp/ParamTfNum=:req_tf_num', function ( req, res ) {
