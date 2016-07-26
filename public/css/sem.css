@@ -1,59 +1,16 @@
 /*
    CSS pel semafor
+
    a un CLASS "nom" li correspon un ".nom"
    a un ID "nom"    li correspon un "#nom"
+
+   timg -> tSPAsem
 */
 
 #contingut {
     border: 1px solid blue ;
     background: #a0a0a0 ;
     text-align: center ;
- }
-
-#my_header {
-    text-align: center ;
- }
-
-#my_date {
-    text-align: center ;
-    color: green ;
- }
-
-.timg {
-    border: 1px solid green ;
-    width: 100% ;
-    background-color: #A0A0A0 ;
- }
-
-.timg TD {
-    vertical-align: top ;
- }
-
-.tpeu {
-    border: 1px solid yellow ;
-    width: 100% ;
-    background: #E0E0E0 ;
- }
-
-.tsem {
-    border: 1px solid yellow ;
- }
-
-.tsem td {
-    border: none ;
- }
-
-.tSPAlogon {
-    border: 1px solid black ;
-    width: 100% ;
- }
-
-.txtblanc {
-    background-color: #FFFFFF ;
- }
-
-.imatge {
-    background: #F0F000 ;
  }
 
 #imatge_div {
@@ -66,6 +23,89 @@
     border: 1px solid red ;
  }
 
+#my_header {
+    text-align: center ;
+ }
+
+#my_date {
+    text-align: center ;
+    color: green ;
+ }
+
+.imgleft {
+    border: 1px solid red ;
+ }
+
+.tpeu {
+    border: 1px solid yellow ;
+    width: 100% ;
+    background: #E0E0E0 ;
+ }
+
+.t_Virt_Sem {
+    border: 1px solid yellow ;
+    vertical-align: top ;
+ }
+
+.t_Virt_Sem td {
+    border: none ;
+ }
+
+
+.tSPA_ajuda {
+    border: 1px solid red ;
+    background-color: #A0A0A0 ;
+    width: 100% ;
+ }
+.tSPA_ajuda td {
+    vertical-align: top ;
+ }
+
+.tSPA_foto {
+    border: 1px solid blue ;
+    background-color: #A0A0A0 ;
+    width: 100% ;
+ }
+.tSPA_foto td {
+    vertical-align: top ;
+ }
+
+.tSPA_logon {
+    border: 1px solid black ;
+    background-color: #A0A0A0 ;
+    width: 100% ;
+ }
+.tSPA_logon td {
+    vertical-align: top ;
+ }
+
+.tSPA_sem {
+    border: 1px solid green ;
+    background-color: #A0A0A0 ;
+    width: 100% ;
+ }
+.tSPA_sem TD {
+    vertical-align: top ;
+ }
+
+.tSPA_wassa {
+    border: 1px solid yellow ;
+    background-color: #A0A0A0 ;
+    width: 100% ;
+ }
+.tSPA_wassa td {
+    vertical-align: top ;
+ }
+
+
+.txtblanc {
+    background-color: #FFFFFF ;
+ }
+
+.iimatge {
+    background: #F0F000 ;
+ }
+
 H1, H2, H3, H4 {
      text-align: center ;
  }
@@ -73,7 +113,7 @@ H1, H2, H3, H4 {
 body {
     font-family: Verdana, Arial, sans-serif ;
     font-size: 18px ;
-    background: #c0c0c0 ;
+    background: #C0C0C0 ;
     mmargin: 0 ;
     padding: 0 ;
     margin-left: 20px ;

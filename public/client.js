@@ -19,6 +19,18 @@ Date.prototype.hhmmss = function () {
         return myHHMMSS ;
 } ; // hhmmss
 
+
+function Posar_Pagina_Logon() {
+
+    $.get( '/logon.htm', function( page ) {
+        console.log( '*** Demanem al server LOGON.HTM, initial SPA text.' ) ;
+        $( "#SPA_data" ).html( page ) ; // show received HTML at specific <div>
+    }) ; // get(logon.htm)
+
+    $( "#contingut" ).html( 'El servidor &eacute;s plenament funcional' ) ; // show received HTML at specific <div>
+
+} ; // Posar_Pagina_Logon
+
 // ========================================================================
 
 $( function() { // DOM ready event for main INDEX.HTML page
@@ -27,15 +39,7 @@ $( function() { // DOM ready event for main INDEX.HTML page
 
 // posem al SPA_data (we are a SPA) la sub-pagina inicial que veu el client : LOGON.HTM
 
-    $.get( '/logon.htm', function( page ) {
-        console.log( '*** Demanem al server LOGON.HTM, initial SPA text.' ) ;
-        $( "#SPA_data" ).html( page ) ; // show received HTML at specific <div>
-    }) ; // get(logon.htm)
-
-    $.get( '/initial.htm', function( page ) {  // posem al CONTENT (we are a SPA) la sub-pagina INITAL.HTML
-        console.log( '*** Demanem al server INITIAL.HTM, initial SPA text.' ) ;
-        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
-    }) ; // get(initial.htm)
+    Posar_Pagina_Logon() ;
 
 // posar la data actual - aixi diferenciem re-loads - "Now is"
 //    var szAra = 'Timestamp [' + (new Date).yyyymmdd() +', '+ (new Date).hhmmss() + ']' ;
@@ -45,17 +49,63 @@ $( function() { // DOM ready event for main INDEX.HTML page
 
 // ========================================================================
 
-// Functions available to INDEX.HTML page
+// Functions available to links in INDEX.HTML page
 
+$( "#clkTopMenu_Semafor" ).click( function() {
 
-$( "#clkId" ).click( function() {
+    $.get( '/sem.htm', function( page ) {
+        console.log( '*** Demanem al server SEM.HTM, SPA text.' ) ;
+        $( "#SPA_data" ).html( page ) ; // show received HTML at specific <div>
+    }) ; // get(sem.htm)
+
+}) ; // click on menu "Semafor" link
+
+$( "#clkTopMenu_Foto" ).click( function() {
+
+    $.get( '/foto.htm', function( page ) {
+        console.log( '*** Demanem al server FOTO.HTM, SPA text.' ) ;
+        $( "#SPA_data" ).html( page ) ; // show received HTML at specific <div>
+    }) ; // get(foto.htm)
+
+}) ; // click on menu "foto" link
+
+$( "#clkTopMenu_Wassa" ).click( function() {
+
+    $.get( '/wassa.htm', function( page ) {
+        console.log( '*** Demanem al server WASSA.HTM, SPA text.' ) ;
+        $( "#SPA_data" ).html( page ) ; // show received HTML at specific <div>
+    }) ; // get(wassa.htm)
+
+}) ; // click on menu "wassa" link
+
+$( "#clkTopMenu_Id" ).click( function() {
 
     $.get( '/identificar', function( page ) {
-        console.log( '*** index - demanem al server IDENTIFICAR.' ) ;
+        console.log( '*** index - top menu - demanem al server IDENTIFICAR.' ) ;
         $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
-    }) ; // get(identificar)
+    }) ; // fer identificar
 
 }) ; // identificar
+
+$( "#clkTopMenu_Help" ).click( function() {
+
+    $.get( '/ajuda.htm', function( page ) {
+        console.log( '*** Demanem al server HELP.HTM, SPA text.' ) ;
+        $( "#SPA_data" ).html( page ) ; // show received HTML at specific <div>
+    }) ; // get(help.htm)
+
+}) ; // click on menu "help" link
+
+$( "#clkTopMenu_Logoff" ).click( function() {
+
+    $.post( '/fer_logoff', function( page ) {
+        console.log( '*** Demanem al server fer LOGOFF.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ; // fer logoff
+
+    Posar_Pagina_Logon() ;
+
+}) ; // click on menu "help" link
 
 // ========================================================================
 
@@ -294,6 +344,8 @@ $( "#clkFoto_fer" ).click( function() {
     }) ; // get(activar)
 }) ; // fer foto
 
+    console.log( '*** foto.htm - DOM ready event.' ) ;
+
 } ; // foto_ready()
 
 
@@ -333,7 +385,7 @@ $.ajax({                         // as we can receive an "ok" or an "no ok" answ
 
     dataType : "html",           // The type of data we expect back
 
-    success: function(page){
+    success: function( page ){
 //        alert( "OK" ) ;
         $( "#contingut" ).html( page ) ;
 
@@ -346,9 +398,13 @@ $.ajax({                         // as we can receive an "ok" or an "no ok" answ
 
     },
     statusCode: {
-        401: function() { $( "#contingut" ).html( (new Date).yyyymmdd() + '--- Logon() user('+ logon_data.logon_usr +') not authorized' ) },
-        404: function() { $( "#contingut" ).html( (new Date).yyyymmdd() + '--- Logon() unavailable' ) },
-        500: function() { $( "#contingut" ).html( (new Date).yyyymmdd() + '--- Logon() Server error' ) }
+        401: function() { $( "#contingut" ).html( (new Date).yyyymmdd() + ' --- Logon() user('+ logon_data.logon_usr +') not authorized' ) },
+        402: function() { $( "#contingut" ).html( (new Date).yyyymmdd() + ' --- Logon() unavailable' ) },
+
+        404: function( xhr ) {
+            $( "#contingut" ).html( (new Date).hhmmss() + ' ' + xhr.responseText )
+        },
+        500: function() { $( "#contingut" ).html( (new Date).yyyymmdd() + ' --- Logon() Server error' ) }
     }
 })
 
@@ -368,7 +424,7 @@ $.ajax({                         // as we can receive an "ok" or an "no ok" answ
 
 // ++++ (4) WHATSAPP_READY()
 
-function whatsapp_ready() {
+function wassa_ready() {
 
 function preparemSend_Wassa_Tf_Txt_Click() {
 
@@ -390,16 +446,16 @@ var wurl = '/enviar_msg_whatsapp' ;
 
     preparemSend_Wassa_Tf_Txt_Click() ; //
 
-    console.log( '*** whatsapp.htm - DOM ready event.' ) ;
+    console.log( '*** wassa.htm - DOM ready event.' ) ;
 
-} ; // whatsapp_ready()
+} ; // wassa_ready()
 
 
 // ++++ (5) HELP_READY()
 
-function help_ready() {
+function ajuda_ready() {
 
     console.log( '*** help.htm - DOM ready event.' ) ;
 
-} ; // help_ready()
+} ; // ajuda_ready()
 

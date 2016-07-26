@@ -21,6 +21,7 @@
 // 1.0.p - sequencia random-8
 // 1.0.q - separem client.js per posar ( logon / semafor / foto / whatsapp / help ) al mateix lloc
 // 1.1.a - SPA amb logon/semafor/foto/whatsapp/help - codi a CLIENT.JS
+// 1.1.b - logoff() link 
 
 
 // Conexionat del GPIO :
@@ -67,6 +68,23 @@
 // Pla de proves de correcte funcionament : 5_llista_de_proves.txt
 // Descripcio del contingut global : /home/pi/contingut.txt
 
+// Missatges que envia el servidor :
+//     szResultat = '+++ raspall001 - LOGON(' + szUserName + ') OK' ;
+//     szResultat = '--- raspall002 - LOGON FAILED - invalid credentials' ;
+//     szResultat = '--- raspall003 - Logon FAILED - already logged' ;
+//     szResultat = '+++ raspall004 - Logoff' ;
+
+// Estructura de la pagina - veure INDEX.HTM
+//     a dalt tenim "peudepagina", jejeje
+//     a baix tenim (status de fet) "contingut"
+//     la part "variable" al mitg es diu "SPA_data"
+//     hi podem posar
+//         logon.htm
+//         sem.htm
+//         foto.htm
+//         wassa.htm
+//         ajuda.htm
+
 // =========================================================================
 
 // Moduls que ens calen :
@@ -86,6 +104,8 @@ var bodyParser   = require( "body-parser" ) ;
 
 
 // les meves constants :
+// =====================
+
 const k_Verd     = 18 ;
 const k_Groc     = 15 ;
 const k_Vermell  = 16 ;
@@ -98,7 +118,7 @@ var Q_sequenciador  = 0 ;               // estat del sequenciador := aturat ;
 var myIntervalObject ;                  // used by clearInterval.
 var myIntervalValue = 1000 ;            // slow = 3000, normal = 1000, fast = 500.
 var szResultat      = '' ;              // console and client return string
-var myVersio        = 'v1.1.a' ;        // version identifier
+var myVersio        = 'v1.1.b' ;        // version identifier
 var png_File        = '/home/pi/semafor/public/images/webcam/webcam.png' ; // created by python
 
 
@@ -106,6 +126,8 @@ var png_File        = '/home/pi/semafor/public/images/webcam/webcam.png' ; // cr
 // ==============
 
      app.set( 'mPort', process.env.PORT || 1212 ) ;      // save port to use in APP var ; shall use 1212 (see docu)
+     app.set( 'Nom_Usuari_Logged', '' )                  // nobody logged yet
+
 //    app.disable( 'etag' ) ;                             // try to prevent 304
 
 // tell Express application to load and server static files (if there any) from public folder:
@@ -143,6 +165,23 @@ Date.prototype.hhmmss = function () {
      var myHHMMSS = hh + ':' + mm + ':' + ss ;
      return myHHMMSS ;
 } ; // hhmmss
+
+
+function User_Is_Logged() {
+
+var UsrName = app.get( 'Nom_Usuari_Logged' ) ;
+var UsrLong = UsrName.length ;
+
+     var szResultIsLogged = 'Is there a user logged ? usr (' + UsrName + '), lng (' + UsrLong + ').' ;
+     console.log( szResultIsLogged ) ;
+
+     if ( UsrLong > 0 ) {
+          return true ;
+     } else {
+          return false ;
+     } ;
+
+} ; // User_Is_Logged()
 
 
 function encenderLuz( miPin ) { // 
@@ -409,7 +448,7 @@ function borrar_Fichero( nom_Fitxer_Esborrar ) {
 
     app.set( 'appHostname', require('os').hostname() ) ;
     console.log( '+++ +++ +++ +++ +++ +++ +++ +++ app SEM starts. Versio [%s], HN [%s], TimeStamp [%s-%s].',
-        myVersio, app.get('appHostname'), (new Date).yyyymmdd(), (new Date).hhmmss() ) ;
+        myVersio, app.get( 'appHostname' ), (new Date).yyyymmdd(), (new Date).hhmmss() ) ;
 
 
 // apaguem les 3 bombetes inicialment
@@ -445,6 +484,7 @@ app.get( '/identificar', function (req, res) {
      szResultat  = '+++ app SEM JA. ' ;
      szResultat += 'Versio [' + myVersio + ']. ' ;
      szResultat += 'HN [' + app.get( 'appHostname' )+ ']. ' ;
+     szResultat += 'usr [' + app.get( 'Nom_Usuari_Logged' )+ ']. ' ;
      szResultat += 'GYR [' + k_Verd + '/' + k_Groc + '/' + k_Vermell + ']. ' ;
      szResultat += 'TimeStamp [' + (new Date).hhmmss() + '].' ;
      console.log( szResultat ) ;
@@ -510,12 +550,46 @@ app.post( '/menu_encendre_llum/Color=:res_color_llum', function ( req, res ) {
 
 app.post( '/fer_logon/nom_Logon=:req_username&pwd_Logon=:req_pwd', function ( req, res ) {
 
-     console.log( '>>> Menu Logon() - usr (%s) pwd (%s).', req.params.req_username, req.params.req_pwd ) ;
+var szUserName = req.params.req_username ;
+var szUser_Pwd = req.params.req_pwd ;
 
-     szResultat = '+++ LOGON() OK' ;
-     res.status( 200 ).send( szResultat ) ; 
+var chSel = szUser_Pwd.charAt(0) ;
+
+var headers = req.headers ;
+var userAgent = headers[ 'user-agent' ] ;
+
+     console.log( '>>> Menu Logon() - usr (%s) pwd (%s).', szUserName, szUser_Pwd ) ;
+//     console.log( '>>> Menu Logon() - usr (%s) pwd (%s) ch(%s) ua(%s).', szUserName, szUser_Pwd, chSel, userAgent ) ;
+
+     if ( User_Is_Logged() ) {
+          szResultat = '--- raspall003 - Logon FAILED - already logged' ;
+          console.log( szResultat ) ;
+          res.status( 404 ).send( szResultat ) ; 
+     } else {
+
+          if ( chSel == '.' ) {
+               app.set( 'Nom_Usuari_Logged', szUserName ) ;                // we have a user logged in
+               szResultat = '+++ raspall001 - Logon (' + szUserName + ') OK' ;
+               res.status( 200 ).send( szResultat ) ; 
+          } else {
+               szResultat = '--- raspall002 - Logon FAILED - invalid credentials' ;
+               console.log( szResultat ) ;
+               res.status( 404 ).send( szResultat ) ; 
+          } ;
+     } ;
 
 } ) ; // fer logon
+
+
+app.post( '/fer_logoff', function ( req, res ) {
+
+     app.set( 'Nom_Usuari_Logged', '' ) ;               // nobody logged in
+
+     var szLogoff = '+++ raspall004 - Logoff' ;
+     console.log( szLogoff ) ;
+     res.status( 200 ).send( szLogoff ) ; 
+
+} ) ; // fer logoff
 
 
 // app.post( '/enviar_msg_whatsapp/ParamTfNum=:req_tf_num', function ( req, res ) {
@@ -529,7 +603,7 @@ var python_options = {
   args: [ 'demos',  '-c', '/usr/local/bin/mydetails',  '-s', '34666777888',  'Envio des NODEJS' ]
 } ;
 
-     console.log( 'posted ' + JSON.stringify( req.body ) ) ;
+     console.log( 'posted ' + JSON.stringify( req.body ) ) ; // dump request body
 
 // agafar num tf i texte del BODY
      
