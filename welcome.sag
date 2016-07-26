@@ -1,5 +1,7 @@
 
 . establir punt de control    : git commit -am "v1.0.b contingut inicial, funciona"
+. afegir fitxers nous         : (a) ../eines/netejar (b) git add .
+. verificar                   : git status
 . enviar codi                 : git push -u origin master
 . URL                         : https://github.com/sebastianet/semafor
 

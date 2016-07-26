@@ -22,6 +22,7 @@
 // 1.0.q - separem client.js per posar ( logon / semafor / foto / whatsapp / help ) al mateix lloc
 // 1.1.a - SPA amb logon/semafor/foto/whatsapp/help - codi a CLIENT.JS
 // 1.1.b - logoff() link 
+// 1.1.c - sem.htm is a table
 
 
 // Conexionat del GPIO :
@@ -52,6 +53,7 @@
 //         rc = 1             : https://github.com/extrabacon/python-shell/issues/46
 //     yowsup                 : https://github.com/tgalal/yowsup
 //         rc 1               : https://github.com/tgalal/yowsup/issues/1702
+//     set Interval           : https://nodejs.org/api/timers.html
 
 // Temes pendents :
 //     (*) enlloc de console.log() fer "bitacora(szOut)" per afegir timestamp a tots de cop i volta
@@ -118,7 +120,7 @@ var Q_sequenciador  = 0 ;               // estat del sequenciador := aturat ;
 var myIntervalObject ;                  // used by clearInterval.
 var myIntervalValue = 1000 ;            // slow = 3000, normal = 1000, fast = 500.
 var szResultat      = '' ;              // console and client return string
-var myVersio        = 'v1.1.b' ;        // version identifier
+var myVersio        = 'v1.1.c' ;        // version identifier
 var png_File        = '/home/pi/semafor/public/images/webcam/webcam.png' ; // created by python
 
 
@@ -209,10 +211,11 @@ function apagarLuz( miPin ) { //
 
 function aturar_Llums_i_Tot() {
 
-//     szResultat = '>>> Aturar totes les llums i els temporitzadors.' ;
-//     console.log( szResultat ) ;
+     var szAturar = '>>> Aturar totes les llums i els temporitzadors.' ;
+     console.log( szAturar ) ;
 
      clearInterval( myIntervalObject ) ;
+
      apagarLuz( k_Groc ) ;
      apagarLuz( k_Vermell ) ;
      apagarLuz( k_Verd ) ;
@@ -763,7 +766,11 @@ app.post( '/menu_engegar_sequencia/Tipus=:res_tipus_sequencia', function (req, r
 
 
      if ( Q_sequenciador != 0 ) {
+
+          clearInterval( myIntervalObject ) ; // prevent overlapping
+
           myIntervalObject = setInterval( Mi_Sequenciador, myIntervalValue ) ; // schedules repeated execution of 'callback' every 'delay' mSg.
+                                                                               // returns a Timeout for use with clearTimeout().
      } ;
 
      console.log( szResultat ) ;
