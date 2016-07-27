@@ -23,6 +23,8 @@
 // 1.1.a - SPA amb logon/semafor/foto/whatsapp/help - codi a CLIENT.JS
 // 1.1.b - logoff() link 
 // 1.1.c - sem.htm is a table
+// 1.1.d - use req.session to save logged user name
+// 1.1.e - security code in server, not in client; trace client IP
 
 
 // Conexionat del GPIO :
@@ -54,14 +56,16 @@
 //     yowsup                 : https://github.com/tgalal/yowsup
 //         rc 1               : https://github.com/tgalal/yowsup/issues/1702
 //     set Interval           : https://nodejs.org/api/timers.html
+//     session                ; https://github.com/expressjs/session
+
+// Variables prpies :
+//     req.session.nom_usuari
 
 // Temes pendents :
 //     (*) enlloc de console.log() fer "bitacora(szOut)" per afegir timestamp a tots de cop i volta
 //     (*) abans de fer una foto, esborrar la anterior (encara en tenim el nom)
 //     (*) provar des un mobil - la pantalla es molt petita !
-//     (*) tancar l'aplicacio des el client
 //     (*) enviat missatge whatsapp amb una imatge des el browser
-//     (*) identificar el usuari al client
 //     (*) fer LOGON() obligatori i fer una trassa de IPs que entren
 //     (*) cron - tasca "netejar"
 //     (*) obrir el router per accedir el client des Moscu - http://usuaris.tinet.cat/sag/rspi3.htm#rspi_obrir_ports
@@ -92,8 +96,11 @@
 // Moduls que ens calen :
 // ======================
 
-var express = require( 'express' ) ;
+var express      = require( 'express' ) ;
 var app = express() ;
+
+var session      = require( 'express-session' ) ;    // express session
+var bodyParser   = require( "body-parser" ) ;
 
 var path         = require( 'path' ) ;
 var logger       = require( 'morgan' ) ;             // logging middleware
@@ -101,8 +108,6 @@ var fs           = require( 'fs' ) ;                 // get JPG or PNG
 
 var gpio         = require( 'rpi-gpio' ) ;           // GPIO pin access
 var PythonShell  = require( 'python-shell' ) ;       // send commands to python
-
-var bodyParser   = require( "body-parser" ) ;
 
 
 // les meves constants :
@@ -120,7 +125,7 @@ var Q_sequenciador  = 0 ;               // estat del sequenciador := aturat ;
 var myIntervalObject ;                  // used by clearInterval.
 var myIntervalValue = 1000 ;            // slow = 3000, normal = 1000, fast = 500.
 var szResultat      = '' ;              // console and client return string
-var myVersio        = 'v1.1.c' ;        // version identifier
+var myVersio        = 'v1.1.e' ;        // version identifier
 var png_File        = '/home/pi/semafor/public/images/webcam/webcam.png' ; // created by python
 
 
@@ -128,9 +133,12 @@ var png_File        = '/home/pi/semafor/public/images/webcam/webcam.png' ; // cr
 // ==============
 
      app.set( 'mPort', process.env.PORT || 1212 ) ;      // save port to use in APP var ; shall use 1212 (see docu)
-     app.set( 'Nom_Usuari_Logged', '' )                  // nobody logged yet
+     app.set( 'appHostname', require('os').hostname() ) ;
 
 //    app.disable( 'etag' ) ;                             // try to prevent 304
+
+// allow to use "req.session.*" header
+     app.use( session( { secret: 'secretSebas', resave: false, saveUninitialized: false } ) ) ;  // encrypt session contents, allow "req.session.*" header
 
 // tell Express application to load and server static files (if there any) from public folder:
      app.use( express.static( __dirname + '/public' ) );            // set the static files location /public/img will be /img for users
@@ -169,15 +177,12 @@ Date.prototype.hhmmss = function () {
 } ; // hhmmss
 
 
-function User_Is_Logged() {
+function User_Is_Logged( Param_Sessio ) {
 
-var UsrName = app.get( 'Nom_Usuari_Logged' ) ;
-var UsrLong = UsrName.length ;
-
-     var szResultIsLogged = 'Is there a user logged ? usr (' + UsrName + '), lng (' + UsrLong + ').' ;
+     var szResultIsLogged = 'Is there a user (' + Param_Sessio.nom_usuari + ') logged ?' ;
      console.log( szResultIsLogged ) ;
 
-     if ( UsrLong > 0 ) {
+     if ( Param_Sessio && Param_Sessio.nom_usuari ) { // Check if session exists
           return true ;
      } else {
           return false ;
@@ -449,22 +454,21 @@ function borrar_Fichero( nom_Fitxer_Esborrar ) {
 
 // Escriure un missatge inicial a la consola
 
-    app.set( 'appHostname', require('os').hostname() ) ;
     console.log( '+++ +++ +++ +++ +++ +++ +++ +++ app SEM starts. Versio [%s], HN [%s], TimeStamp [%s-%s].',
         myVersio, app.get( 'appHostname' ), (new Date).yyyymmdd(), (new Date).hhmmss() ) ;
 
 
 // apaguem les 3 bombetes inicialment
 
-gpio.setup( k_Groc, gpio.DIR_OUT, function(err) { // yellow
+gpio.setup( k_Groc, gpio.DIR_OUT, function( err ) {    // yellow
      apagarLuz( k_Groc ) ;
 } ) ;
 
-gpio.setup( k_Vermell, gpio.DIR_OUT, function(err) { // red
+gpio.setup( k_Vermell, gpio.DIR_OUT, function( err ) { // red
      apagarLuz( k_Vermell ) ;
 } ) ;
 
-gpio.setup( k_Verd, gpio.DIR_OUT, function(err) { // green
+gpio.setup( k_Verd, gpio.DIR_OUT, function( err ) {    // green
      apagarLuz( k_Verd ) ;
 } ) ;
 
@@ -474,26 +478,81 @@ gpio.setup( k_Verd, gpio.DIR_OUT, function(err) { // green
 // app.get( '/', function (req, res)            { res.send( 'Hola, mundo !' ); });
 
 
-app.post( '/menu_cerrar_aplicacion', function ( req, res ) {
+app.post( '/menu_cerrar_aplicacion/Id=:ctrl_id', function ( req, res ) {
 
-     aturar_Llums_i_Tot() ; // turn off lights and stop timer
-     process.exit( 1 ) ;    // exit application - 0 means OK
+     if ( User_Is_Logged( req.session ) ) {
+
+          res.sendFile( 'public/final.htm', {root: __dirname } ) ;
+
+          aturar_Llums_i_Tot() ; // turn off lights and stop timer
+          process.exit( 1 ) ;    // exit application - 0 means OK
+
+     } else {
+          res.sendFile( 'public/logon.htm', {root: __dirname } ) ;
+          szResultat = '--- Menu BYE - send LOGON.HTM' ;
+          console.log( szResultat ) ;
+     } ;
 
 } ) ; // menu cerrar aplicacion
 
 
-app.get( '/identificar', function (req, res) {
+app.get( '/identificar', function ( req, res ) {
 
      szResultat  = '+++ app SEM JA. ' ;
      szResultat += 'Versio [' + myVersio + ']. ' ;
-     szResultat += 'HN [' + app.get( 'appHostname' )+ ']. ' ;
-     szResultat += 'usr [' + app.get( 'Nom_Usuari_Logged' )+ ']. ' ;
+     szResultat += 'HN [' + app.get( 'appHostname' ) + ']. ' ;
+     szResultat += 'usr [' + req.session.nom_usuari + ']. ' ;
      szResultat += 'GYR [' + k_Verd + '/' + k_Groc + '/' + k_Vermell + ']. ' ;
      szResultat += 'TimeStamp [' + (new Date).hhmmss() + '].' ;
      console.log( szResultat ) ;
      res.status( 200 ).send( szResultat ) ; 
 
 } ) ; // menu Id
+
+
+app.get( '/menu_semaforo', function ( req, res ) {
+     if ( User_Is_Logged( req.session ) ) {
+          res.sendFile( 'public/sem.htm', {root: __dirname } ) ;
+          szResultat = '+++ Menu SEM - send SEM.HTM' ;
+     } else {
+          res.sendFile( 'public/logon.htm', {root: __dirname } ) ;
+          szResultat = '--- Menu SEM - send LOGON.HTM' ;
+     } ;
+     console.log( szResultat ) ;
+} ) ; // menu(semaforo)
+
+app.get( '/menu_foto', function ( req, res ) {
+     if ( User_Is_Logged( req.session ) ) {
+          res.sendFile( 'public/foto.htm', {root: __dirname } ) ;
+          szResultat = '+++ Menu FOTO - send FOTO.HTM' ;
+     } else {
+          res.sendFile( 'public/logon.htm', {root: __dirname } ) ;
+          szResultat = '--- Menu FOTO - send LOGON.HTM' ;
+     } ;
+     console.log( szResultat ) ;
+} ) ; // menu(foto)
+
+app.get( '/menu_wassa', function ( req, res ) {
+     if ( User_Is_Logged( req.session ) ) {
+          res.sendFile( 'public/wassa.htm', {root: __dirname } ) ;
+          szResultat = '+++ Menu WASSA - send WASSA.HTM' ;
+     } else {
+          res.sendFile( 'public/logon.htm', {root: __dirname } ) ;
+          szResultat = '--- Menu WASSA - send LOGON.HTM' ;
+     } ;
+     console.log( szResultat ) ;
+} ) ; // menu(wassa)
+
+app.get( '/menu_bye', function ( req, res ) {
+     if ( User_Is_Logged( req.session ) ) {
+          res.sendFile( 'public/bye.htm', {root: __dirname } ) ;
+          szResultat = '+++ Menu BYE - send BYE.HTM' ;
+     } else {
+          res.sendFile( 'public/logon.htm', {root: __dirname } ) ;
+          szResultat = '--- Menu BYE - send LOGON.HTM' ;
+     } ;
+     console.log( szResultat ) ;
+} ) ; // menu(bye)
 
 
 app.post( '/menu_apagar_llum/Color=:res_color_llum', function ( req, res ) {
@@ -561,17 +620,23 @@ var chSel = szUser_Pwd.charAt(0) ;
 var headers = req.headers ;
 var userAgent = headers[ 'user-agent' ] ;
 
-     console.log( '>>> Menu Logon() - usr (%s) pwd (%s).', szUserName, szUser_Pwd ) ;
+//     console.log( '>>> ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.' ) ;
+//     console.log( req.headers ) ;
+//     console.log( req.connection ) ;
+//     console.log( req.connection.remoteAddress ) ;
+//     console.log( '>>> ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.' ) ;
+
+     console.log( '>>> Menu Logon() - usr (%s) pwd (%s) IP(%s).', szUserName, szUser_Pwd, req.connection.remoteAddress ) ;
 //     console.log( '>>> Menu Logon() - usr (%s) pwd (%s) ch(%s) ua(%s).', szUserName, szUser_Pwd, chSel, userAgent ) ;
 
-     if ( User_Is_Logged() ) {
+     if ( User_Is_Logged( req.session ) ) {
           szResultat = '--- raspall003 - Logon FAILED - already logged' ;
           console.log( szResultat ) ;
           res.status( 404 ).send( szResultat ) ; 
      } else {
 
           if ( chSel == '.' ) {
-               app.set( 'Nom_Usuari_Logged', szUserName ) ;                // we have a user logged in
+               req.session.nom_usuari = szUserName ;
                szResultat = '+++ raspall001 - Logon (' + szUserName + ') OK' ;
                res.status( 200 ).send( szResultat ) ; 
           } else {
@@ -584,9 +649,10 @@ var userAgent = headers[ 'user-agent' ] ;
 } ) ; // fer logon
 
 
-app.post( '/fer_logoff', function ( req, res ) {
+app.get( '/fer_logoff', function ( req, res ) {
 
-     app.set( 'Nom_Usuari_Logged', '' ) ;               // nobody logged in
+     req.session.nom_usuari = '' ;   // nobody logged in
+     delete req.session.nom_usuari ;
 
      var szLogoff = '+++ raspall004 - Logoff' ;
      console.log( szLogoff ) ;

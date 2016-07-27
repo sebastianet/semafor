@@ -22,6 +22,11 @@ Date.prototype.hhmmss = function () {
 
 function Posar_Pagina_Logon() {
 
+// called from 3 places :
+//   1 - "index.htm" ready event
+//   2 - "logon" menu click
+//   3 - "logoff" menu click
+
     $.get( '/logon.htm', function( page ) {
         console.log( '*** Demanem al server LOGON.HTM, initial SPA text.' ) ;
         $( "#SPA_data" ).html( page ) ; // show received HTML at specific <div>
@@ -51,19 +56,25 @@ $( function() { // DOM ready event for main INDEX.HTML page
 
 // Functions available to links in INDEX.HTML page
 
+$( "#clkTopMenu_Logon" ).click( function() {
+    Posar_Pagina_Logon() ;
+}) ; // click on menu "logon" link
+
 $( "#clkTopMenu_Semafor" ).click( function() {
 
-    $.get( '/sem.htm', function( page ) {
-        console.log( '*** Demanem al server SEM.HTM, SPA text.' ) ;
+//    $.get( '/sem.htm', function( page ) {
+    $.get( '/menu_semaforo', function( page ) {
+        console.log( '*** Demanem al server un SPA text, SEM.HTM o LOGON.HTM.' ) ;
         $( "#SPA_data" ).html( page ) ; // show received HTML at specific <div>
     }) ; // get(sem.htm)
 
-}) ; // click on menu "Semafor" link
+}) ; // click on menu "semafor" link
 
 $( "#clkTopMenu_Foto" ).click( function() {
 
-    $.get( '/foto.htm', function( page ) {
-        console.log( '*** Demanem al server FOTO.HTM, SPA text.' ) ;
+//    $.get( '/foto.htm', function( page ) {
+    $.get( '/menu_foto', function( page ) {
+        console.log( '*** Demanem al server un SPA text, FOTO.HTM o LOGON.HTM.' ) ;
         $( "#SPA_data" ).html( page ) ; // show received HTML at specific <div>
     }) ; // get(foto.htm)
 
@@ -71,8 +82,9 @@ $( "#clkTopMenu_Foto" ).click( function() {
 
 $( "#clkTopMenu_Wassa" ).click( function() {
 
-    $.get( '/wassa.htm', function( page ) {
-        console.log( '*** Demanem al server WASSA.HTM, SPA text.' ) ;
+//    $.get( '/wassa.htm', function( page ) {
+    $.get( '/menu_wassa', function( page ) {
+        console.log( '*** Demanem al server un SPA text, WASSA.HTM o LOGON.HTM.' ) ;
         $( "#SPA_data" ).html( page ) ; // show received HTML at specific <div>
     }) ; // get(wassa.htm)
 
@@ -87,6 +99,14 @@ $( "#clkTopMenu_Id" ).click( function() {
 
 }) ; // identificar
 
+$( "#clkTopMenu_Bye" ).click( function() {
+    $.post( '/menu_cerrar_aplicacion/Id="abc"', function( page ) {
+        console.log( '*** index - top menu - demanem al server BYE.' ) ;
+        $( "#SPA_data" ).html( page ) ; // show received HTML at specific <div>
+    } ) ;
+    $( "#contingut" ).html( "$$$ APP tancada if loggedon() $$$" ) ;
+}) ; // click on menu "bye" link
+
 $( "#clkTopMenu_Help" ).click( function() {
 
     $.get( '/ajuda.htm', function( page ) {
@@ -98,7 +118,7 @@ $( "#clkTopMenu_Help" ).click( function() {
 
 $( "#clkTopMenu_Logoff" ).click( function() {
 
-    $.post( '/fer_logoff', function( page ) {
+    $.get( '/fer_logoff', function( page ) {
         console.log( '*** Demanem al server fer LOGOFF.' ) ;
         $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
     }) ; // fer logoff
