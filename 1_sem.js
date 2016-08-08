@@ -25,6 +25,7 @@
 // 1.1.c - sem.htm is a table
 // 1.1.d - use req.session to save logged user name
 // 1.1.e - security code in server, not in client; trace client IP
+// 1.1.f - velocitat repeticio ultra rapida. Allow 'toor' logon.
 
 
 // Conexionat del GPIO :
@@ -33,9 +34,10 @@
 //     el 'green'  correspon al pin numero 18, cable blanc - k_Verd
 
 // How to run the app :
-//     Server : engegar amb 'sudo node 1-sem.js' - veure /etc/rc.local
+//     Server : engegar amb 'sudo node 1-sem.js >> sem.log &' - veure /etc/rc.local (alli ja ets "su")
 //     Client intern : apuntar el browser a http://192.168.1.123:1212
-//     Client extern :                      http://88.18.117.86:9009
+//     Client extern :                      http://88.18.117.86:9009 (Sebas)
+//     Client extern :                      http://79.156.26.75:9007 (Josan)
 
 // Comandes reconegudes :
 //     http://192.168.1.123:1212
@@ -58,7 +60,7 @@
 //     set Interval           : https://nodejs.org/api/timers.html
 //     session                ; https://github.com/expressjs/session
 
-// Variables prpies :
+// Variables propies :
 //     req.session.nom_usuari
 
 // Temes pendents :
@@ -125,7 +127,7 @@ var Q_sequenciador  = 0 ;               // estat del sequenciador := aturat ;
 var myIntervalObject ;                  // used by clearInterval.
 var myIntervalValue = 1000 ;            // slow = 3000, normal = 1000, fast = 500.
 var szResultat      = '' ;              // console and client return string
-var myVersio        = 'v1.1.e' ;        // version identifier
+var myVersio        = 'v1.1.f' ;        // version identifier
 var png_File        = '/home/pi/semafor/public/images/webcam/webcam.png' ; // created by python
 
 
@@ -610,6 +612,12 @@ app.post( '/menu_encendre_llum/Color=:res_color_llum', function ( req, res ) {
 } ) ; // menu encendre llum
 
 
+// ######################################################################################################### //
+//                                                                                                           //
+// Fer logon()                                                                                               //
+//                                                                                                           //
+// ######################################################################################################### //
+
 app.post( '/fer_logon/nom_Logon=:req_username&pwd_Logon=:req_pwd', function ( req, res ) {
 
 var szUserName = req.params.req_username ;
@@ -629,7 +637,9 @@ var userAgent = headers[ 'user-agent' ] ;
      console.log( '>>> Menu Logon() - usr (%s) pwd (%s) IP(%s).', szUserName, szUser_Pwd, req.connection.remoteAddress ) ;
 //     console.log( '>>> Menu Logon() - usr (%s) pwd (%s) ch(%s) ua(%s).', szUserName, szUser_Pwd, chSel, userAgent ) ;
 
-     if ( User_Is_Logged( req.session ) ) {
+var Normal_User_Logging = (  ( User_Is_Logged( req.session ) ) && ( !(szUserName === 'toor') )  ) ;
+
+     if ( Normal_User_Logging ) {
           szResultat = '--- raspall003 - Logon FAILED - already logged' ;
           console.log( szResultat ) ;
           res.status( 404 ).send( szResultat ) ; 
@@ -756,7 +766,10 @@ app.post( '/modificar_interval/Periode=:res_nou_periode', function (req, res) {
      var Nou_Periode = req.params.res_nou_periode ;
      console.log( '>>> Menu modificar periode (%s).', Nou_Periode ) ;
 
-     if ( Nou_Periode == 'rapid' ) {
+     if ( Nou_Periode == 'ultra' ) {
+          myIntervalValue = 300 ;
+          szResultat = '+++ periode 300, velocitat ultra.' ;
+     } else if ( Nou_Periode == 'rapid' ) {
           myIntervalValue = 500 ;
           szResultat = '+++ periode 500, velocitat rapida.' ;
      } else if ( Nou_Periode == 'mitja' ) {

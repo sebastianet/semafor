@@ -45,6 +45,11 @@
 
 .tsemwork {
     border: 1px solid white ;
+    background: #E0E0E0 ;
+    margin-top: 15px ;
+ }
+.tsemwork td {
+    padding-right:10px ;
  }
 
 

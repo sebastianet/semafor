@@ -293,6 +293,13 @@ $( "#clk_engegar_Intermitent_Tres_Lums" ).click( function() {
 
 
 
+$( "#clkRepeticioUltra" ).click( function() {
+    $.post( '/modificar_interval/Periode=ultra', function( page ) {
+        console.log( '*** index - demanem al server PERIODE INFIM, velocitat ultra rapida.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ;
+}) ; // periode rapid
+
 $( "#clkRepeticioRapida" ).click( function() {
     $.post( '/modificar_interval/Periode=rapid', function( page ) {
         console.log( '*** index - demanem al server PERIODE PETIT.' ) ;
