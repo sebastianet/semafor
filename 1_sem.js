@@ -26,6 +26,7 @@
 // 1.1.d - use req.session to save logged user name
 // 1.1.e - security code in server, not in client; trace client IP
 // 1.1.f - velocitat repeticio ultra rapida. Allow 'toor' logon.
+// 1.1.g - espai mes gran per texte cap a whatsapp - missatge estat "msg whatsapp enviat ok"
 
 
 // Conexionat del GPIO :
@@ -65,6 +66,7 @@
 
 // Temes pendents :
 //     (*) enlloc de console.log() fer "bitacora(szOut)" per afegir timestamp a tots de cop i volta
+//     (*) drop down menu amb els numeros de tf mes habituals (segons qui ha fet logon)
 //     (*) abans de fer una foto, esborrar la anterior (encara en tenim el nom)
 //     (*) provar des un mobil - la pantalla es molt petita !
 //     (*) enviat missatge whatsapp amb una imatge des el browser
@@ -127,7 +129,7 @@ var Q_sequenciador  = 0 ;               // estat del sequenciador := aturat ;
 var myIntervalObject ;                  // used by clearInterval.
 var myIntervalValue = 1000 ;            // slow = 3000, normal = 1000, fast = 500.
 var szResultat      = '' ;              // console and client return string
-var myVersio        = 'v1.1.f' ;        // version identifier
+var myVersio        = 'v1.1.g' ;        // version identifier
 var png_File        = '/home/pi/semafor/public/images/webcam/webcam.png' ; // created by python
 
 

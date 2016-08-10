@@ -467,6 +467,7 @@ var wurl = '/enviar_msg_whatsapp' ;
 
         $.post( wurl, wdata, function( page ) {
             console.log( '*** mensaje enviado.' ) ;
+            $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
         } ) ; // get
     } ) ; // click
 } ; // preparemSend_Wassa_Tf_Txt_Click()

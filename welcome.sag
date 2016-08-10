@@ -4,6 +4,7 @@
 . verificar                   : git status
 . enviar codi                 : git push -u origin master
 . URL                         : https://github.com/sebastianet/semafor
+. agafar el darrer codi       : git pull origin master
 
 . export DISPLAY=:0
 
