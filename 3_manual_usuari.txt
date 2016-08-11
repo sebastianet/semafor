@@ -1,0 +1,89 @@
+.
+Fitxer "/home/pi/semafor/manual_usuari.txt"
+Darrera modificacio : 20160811, 00:49
+.
+#################################################################################
+#                                                                               #
+#    Manual del usuari del Raspall, el Radspberry que manega el semafor         #
+#                                                                               #
+#################################################################################
+
+.
+Com aturar el Raspberry
+
+1) conectar el portatil al Raspberry fent servir el client "putty"
+2) engegar la comanda "sudo  shutdown  -h  now"
+3) des-endollar el Radspberry per manegar el cablejat
+
+.
+Com engegar el Raspberry
+
+Un cop el Raspberry estigui aturat, s'ha de engegar endollant-lo de nou.
+
+.
+Com conectar el portatil local al Raspberry
+
+Si estem a la mateixa xarxa local que el Raspall, hi podem accedir amb aquesta sequencia :
+
+1) en el Windows, engeguem el programa "putty"
+2) escollim la entrada corresponent a la IP = 192.168.1.123
+3) ens assegurem que el port sigui el 22
+4) piquem "conectar"
+5) ens pregunta "login as"- com a usuari hi posem "pi"
+6) com a paraula de pas hi posem "barce10na" (compte amb el "1" per la "l" i el "0" per la "o")
+
+Si tot ha anat be, veurem el missatge llarg : /etc/motd primer i despres ens mostra la IP externa
+
+.
+Com conectar el portatil "remot" o "exterior" al Raspberry
+
+Farem el mateix que en el cas local, excepte que la IP sera la externa que tinguem en aquel moment,
+i el port el que s'hagi configurat amb el "Alejandra",
+A dia de avui eixes dades son IP = 79.156.26.75 amb el port 9008
+
+.
+Com saber la IP externa (o publica) de la nostra instalacio (Raspall i aplicacio)
+
+La IP publica canvia cada 10 o 15 dies, segons decideix Timofonica.
+Cada cop que les comunicacions es restableixen, el Raspall la envia al correu electronic llovetbasura@gmail.com
+
+.
+Com accedir a la nostra aplicacio del semafor des l'exterior
+
+1) obtenim la IP externa de la nostra instalacio
+2) apuntem un navegador a la URL = http://ip_externa:9007
+
+.
+Com accedir a la nostra aplicacio del semafor des la xarxa privada
+
+Obrim un navegador amb la URL = http:///192.168.1.123:1212
+
+.
+Com saber la IP del portatil
+
+1) obrim una Command Line (pantalla negra)
+2) posem la comanda "ipconfig  /all"
+3) busquem la linia amb la IP ja sigui a la xarxa local (cable) o al wifi
+
+.
+Com saber si hi ha conectivitat entre el portatil i el Raspall
+
+En una Command Line posem la comanda "ping  -t  192.168.1.123"
+Si hi ha resposta es que hi ha conectivitat.
+
+.
+Resum de URLs interessants
+
+*) Alejandra : configuracio del router de Timofonica des un browser
+
+     https://www.movistar.es/ConfigRouters/Alejandra/Acceso/
+
+*) acces al Raspberry des l'exterior
+
+     http://79.156.26.75:9008
+
+*) acces a la aplicacio del semafor des l'exterior
+
+     http://79.156.26.75:9007
+
+
