@@ -112,6 +112,9 @@ $( "#clkTopMenu_Help" ).click( function() {
     $.get( '/ajuda.htm', function( page ) {
         console.log( '*** Demanem al server HELP.HTM, SPA text.' ) ;
         $( "#SPA_data" ).html( page ) ; // show received HTML at specific <div>
+        $.get( '/bitacora', function( page ) {
+             $( "#bitacora_data" ).html( page ) ; // show received HTML at specific <div>
+        }) ; // bitacora data
     }) ; // get(help.htm)
 
 }) ; // click on menu "help" link

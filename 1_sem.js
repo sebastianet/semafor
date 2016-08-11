@@ -27,6 +27,7 @@
 // 1.1.e - security code in server, not in client; trace client IP
 // 1.1.f - velocitat repeticio ultra rapida. Allow 'toor' logon.
 // 1.1.g - espai mes gran per texte cap a whatsapp - missatge estat "msg whatsapp enviat ok"
+// 1.1.h - quadern de bitacora amb 12 linies - szResultat sempre local.
 
 
 // Conexionat del GPIO :
@@ -77,6 +78,7 @@
 
 // Pla de proves de correcte funcionament : 5_llista_de_proves.txt
 // Descripcio del contingut global : /home/pi/contingut.txt
+// Manual del usuari : /home/pi/semafor/manual_usuari.txt
 
 // Missatges que envia el servidor :
 //     szResultat = '+++ raspall001 - LOGON(' + szUserName + ') OK' ;
@@ -128,9 +130,12 @@ const k_Vermell  = 16 ;
 var Q_sequenciador  = 0 ;               // estat del sequenciador := aturat ;
 var myIntervalObject ;                  // used by clearInterval.
 var myIntervalValue = 1000 ;            // slow = 3000, normal = 1000, fast = 500.
-var szResultat      = '' ;              // console and client return string
-var myVersio        = 'v1.1.g' ;        // version identifier
+// var szResultat      = '' ;              // console and client return string
+var myVersio        = 'v1.1.h' ;        // version identifier
 var png_File        = '/home/pi/semafor/public/images/webcam/webcam.png' ; // created by python
+var bitacora        = new Array( " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " " ) ; // 12 lines
+var idx_bitacora    = 0 ;
+var max_bitacora    = bitacora.length ;
 
 
 // configuracio :
@@ -195,9 +200,45 @@ function User_Is_Logged( Param_Sessio ) {
 } ; // User_Is_Logged()
 
 
+function Poner_Bitacora ( szIn ) {
+
+     console.log( 'Posar bitacora : ' + szIn ) ;                                          // first, write to console
+
+     bitacora[ idx_bitacora ] = szIn ;                              // second, record for logging
+     idx_bitacora = idx_bitacora + 1 ;
+     if ( idx_bitacora === max_bitacora ) { idx_bitacora = 0 } ;
+     return 0 ;
+
+} ; // Poner_Bitacora()
+
+
+function Listar_Bitacora () {
+
+     console.log( 'Listar bitacora - inici = ' + idx_bitacora ) ;
+
+     var szOut = " " ;
+     var idx_out = idx_bitacora ; // oldest element
+
+     do {
+
+          console.log( 'Listar bitacora - idx = ' + idx_out ) ;
+
+          szOut = szOut + bitacora[ idx_out ] ;
+          idx_out = idx_out + 1 ;
+          if ( idx_out === max_bitacora ) { idx_out = 0 } ;
+     }
+     while ( !( idx_out === idx_bitacora ) ) ;
+
+     return szOut ;
+
+} ; // Listar_Bitacora()
+
+
+// ########################################### funcions propies del semafor 
+
 function encenderLuz( miPin ) { // 
         
-     var szResultON = (new Date).hhmmss() + ' Encender luz (' + miPin + '). ' ;
+var szResultON = (new Date).hhmmss() + ' Encender luz (' + miPin + '). ' ;
      gpio.write( miPin, true, function(err) {
           if (err) throw err;
           szResultON += '(+++) Written ON to pin (' + miPin + ').' ;
@@ -208,7 +249,7 @@ function encenderLuz( miPin ) { //
 
 function apagarLuz( miPin ) { // 
         
-     var szResultOFF = (new Date).hhmmss() + ' Apagar luz (' + miPin + '). ' ;
+var szResultOFF = (new Date).hhmmss() + ' Apagar luz (' + miPin + '). ' ;
      gpio.write( miPin, false, function(err) {
           if (err) throw err;
           szResultOFF += '(---) Written OFF to pin (' + miPin + ').' ;
@@ -220,7 +261,7 @@ function apagarLuz( miPin ) { //
 
 function aturar_Llums_i_Tot() {
 
-     var szAturar = '>>> Aturar totes les llums i els temporitzadors.' ;
+var szAturar = '>>> Aturar totes les llums i els temporitzadors.' ;
      console.log( szAturar ) ;
 
      clearInterval( myIntervalObject ) ;
@@ -493,76 +534,92 @@ app.post( '/menu_cerrar_aplicacion/Id=:ctrl_id', function ( req, res ) {
 
      } else {
           res.sendFile( 'public/logon.htm', {root: __dirname } ) ;
-          szResultat = '--- Menu BYE - send LOGON.HTM' ;
-          console.log( szResultat ) ;
+          var szResultatCerrar = '--- Menu BYE - send LOGON.HTM' ;
+          console.log( szResultatCerrar ) ;
      } ;
 
 } ) ; // menu cerrar aplicacion
 
 
+app.get( '/bitacora', function ( req, res ) {
+
+var szResultatBitacora = Listar_Bitacora() ;
+
+     console.log( 'Bitacora data request.' ) ;
+     res.status( 200 ).send( szResultatBitacora ) ; 
+
+} ) ; // send bitacora data to HELP sub-menu
+
+
 app.get( '/identificar', function ( req, res ) {
 
-     szResultat  = '+++ app SEM JA. ' ;
-     szResultat += 'Versio [' + myVersio + ']. ' ;
-     szResultat += 'HN [' + app.get( 'appHostname' ) + ']. ' ;
-     szResultat += 'usr [' + req.session.nom_usuari + ']. ' ;
-     szResultat += 'GYR [' + k_Verd + '/' + k_Groc + '/' + k_Vermell + ']. ' ;
-     szResultat += 'TimeStamp [' + (new Date).hhmmss() + '].' ;
-     console.log( szResultat ) ;
-     res.status( 200 ).send( szResultat ) ; 
+var szResultatID  = '+++ app SEM JALL. ' ;
+
+     szResultatID += 'Versio [' + myVersio + ']. ' ;
+     szResultatID += 'HN [' + app.get( 'appHostname' ) + ']. ' ;
+     szResultatID += 'usr [' + req.session.nom_usuari + ']. ' ;
+     szResultatID += 'GYR [' + k_Verd + '/' + k_Groc + '/' + k_Vermell + ']. ' ;
+     szResultatID += 'TimeStamp [' + (new Date).hhmmss() + '].' ;
+
+     Poner_Bitacora ( szResultatID ) ;         // first send to console and log ...
+     res.status( 200 ).send( szResultatID ) ;  // ... then send to client
 
 } ) ; // menu Id
 
 
 app.get( '/menu_semaforo', function ( req, res ) {
+var szResMenuSem ;
      if ( User_Is_Logged( req.session ) ) {
           res.sendFile( 'public/sem.htm', {root: __dirname } ) ;
-          szResultat = '+++ Menu SEM - send SEM.HTM' ;
+          szResMenuSem = '+++ Menu SEM - send SEM.HTM' ;
      } else {
           res.sendFile( 'public/logon.htm', {root: __dirname } ) ;
-          szResultat = '--- Menu SEM - send LOGON.HTM' ;
+          szResMenuSem = '--- Menu SEM - send LOGON.HTM' ;
      } ;
-     console.log( szResultat ) ;
+     console.log( szResMenuSem ) ;
 } ) ; // menu(semaforo)
 
 app.get( '/menu_foto', function ( req, res ) {
+var szResMenuFoto ;
      if ( User_Is_Logged( req.session ) ) {
           res.sendFile( 'public/foto.htm', {root: __dirname } ) ;
-          szResultat = '+++ Menu FOTO - send FOTO.HTM' ;
+          szResMenuFoto = '+++ Menu FOTO - send FOTO.HTM' ;
      } else {
           res.sendFile( 'public/logon.htm', {root: __dirname } ) ;
-          szResultat = '--- Menu FOTO - send LOGON.HTM' ;
+          szResMenuFoto = '--- Menu FOTO - send LOGON.HTM' ;
      } ;
-     console.log( szResultat ) ;
+     console.log( szResMenuFoto ) ;
 } ) ; // menu(foto)
 
 app.get( '/menu_wassa', function ( req, res ) {
+var szResMenuWassa ;
      if ( User_Is_Logged( req.session ) ) {
           res.sendFile( 'public/wassa.htm', {root: __dirname } ) ;
-          szResultat = '+++ Menu WASSA - send WASSA.HTM' ;
+          szResMenuWassa = '+++ Menu WASSA - send WASSA.HTM' ;
      } else {
           res.sendFile( 'public/logon.htm', {root: __dirname } ) ;
-          szResultat = '--- Menu WASSA - send LOGON.HTM' ;
+          szResMenuWassa = '--- Menu WASSA - send LOGON.HTM' ;
      } ;
-     console.log( szResultat ) ;
+     console.log( szResMenuWassa ) ;
 } ) ; // menu(wassa)
 
 app.get( '/menu_bye', function ( req, res ) {
+var szResMenuBye ;
      if ( User_Is_Logged( req.session ) ) {
           res.sendFile( 'public/bye.htm', {root: __dirname } ) ;
-          szResultat = '+++ Menu BYE - send BYE.HTM' ;
+          szResMenuBye = '+++ Menu BYE - send BYE.HTM' ;
      } else {
           res.sendFile( 'public/logon.htm', {root: __dirname } ) ;
-          szResultat = '--- Menu BYE - send LOGON.HTM' ;
+          szResMenuBye = '--- Menu BYE - send LOGON.HTM' ;
      } ;
-     console.log( szResultat ) ;
+     console.log( szResMenuBye ) ;
 } ) ; // menu(bye)
 
 
 app.post( '/menu_apagar_llum/Color=:res_color_llum', function ( req, res ) {
 
-     var Apagar_Llum_Color = req.params.res_color_llum ;
-     szResultat = '>>> Menu apagar llum (' + Apagar_Llum_Color + '). ' ;
+var Apagar_Llum_Color = req.params.res_color_llum ;
+var szResultatApagar = '>>> Menu apagar llum (' + Apagar_Llum_Color + '). ' ;
 
 //     if ( Apagar_Llum_Color == 'verd' ) {
 //          apagarLuz( k_Verd ) ;
@@ -578,38 +635,38 @@ app.post( '/menu_apagar_llum/Color=:res_color_llum', function ( req, res ) {
 //     } ;
 
      aturar_Llums_i_Tot() ;
-     szResultat += '+++ tots els llums apagats.' ;
-     console.log( szResultat ) ;
-     res.status( 200 ).send( szResultat ) ; 
+     szResultatApagar += '+++ tots els llums apagats.' ;
+     console.log( szResultatApagar ) ;
+     res.status( 200 ).send( szResultatApagar ) ; 
 
 } ) ; // menu apagar llum
 
 
 app.post( '/menu_encendre_llum/Color=:res_color_llum', function ( req, res ) {
 
-     var Encendre_Llum_Color = req.params.res_color_llum ;
-     console.log( '>>> Menu encendre llum (%s).', Encendre_Llum_Color ) ;
+var Encendre_Llum_Color = req.params.res_color_llum ;
+var szResultatEncendre = '>>> Menu encendre llum (' + Encendre_Llum_Color + '). ' ;
 
      if ( Encendre_Llum_Color == 'verd' ) {
           encenderLuz( k_Verd ) ;
-          szResultat = '+++ llum verda encesa.' ;
+          szResultatEncendre += '+++ llum verda encesa.' ;
      } else if ( Encendre_Llum_Color == 'groc' ) {
           encenderLuz( k_Groc ) ;
-          szResultat = '+++ llum groc ences.' ;
+          szResultatEncendre += '+++ llum groc ences.' ;
      } else if ( Encendre_Llum_Color == 'vermell' ) {
           encenderLuz( k_Vermell ) ;
-          szResultat = '+++ llum vermell ences.' ;
+          szResultatEncendre += '+++ llum vermell ences.' ;
      } else if ( Encendre_Llum_Color == 'tres_llums' ) {
           encenderLuz( k_Verd ) ;
           encenderLuz( k_Groc ) ;
           encenderLuz( k_Vermell ) ;
-          szResultat = '+++ 3 llums encesos.' ;
+          szResultatEncendre += '+++ 3 llums encesos.' ;
      } else {
-          szResultat = '--- color (' + Encendre_Llum_Color + ') no reconegut.' ;
+          szResultatEncendre += '--- color (' + Encendre_Llum_Color + ') no reconegut.' ;
      } ;
 
-     console.log( szResultat ) ;
-     res.status( 200 ).send( szResultat ) ; 
+     console.log( szResultatEncendre ) ;
+     res.status( 200 ).send( szResultatEncendre ) ; 
 
 } ) ; // menu encendre llum
 
@@ -630,11 +687,15 @@ var chSel = szUser_Pwd.charAt(0) ;
 var headers = req.headers ;
 var userAgent = headers[ 'user-agent' ] ;
 
+var szResultatLogon ;
+
 //     console.log( '>>> ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.' ) ;
 //     console.log( req.headers ) ;
 //     console.log( req.connection ) ;
 //     console.log( req.connection.remoteAddress ) ;
 //     console.log( '>>> ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.' ) ;
+
+var Remote_IP = req.connection.remoteAddress ;
 
      console.log( '>>> Menu Logon() - usr (%s) pwd (%s) IP(%s).', szUserName, szUser_Pwd, req.connection.remoteAddress ) ;
 //     console.log( '>>> Menu Logon() - usr (%s) pwd (%s) ch(%s) ua(%s).', szUserName, szUser_Pwd, chSel, userAgent ) ;
@@ -642,19 +703,20 @@ var userAgent = headers[ 'user-agent' ] ;
 var Normal_User_Logging = (  ( User_Is_Logged( req.session ) ) && ( !(szUserName === 'toor') )  ) ;
 
      if ( Normal_User_Logging ) {
-          szResultat = '--- raspall003 - Logon FAILED - already logged' ;
-          console.log( szResultat ) ;
-          res.status( 404 ).send( szResultat ) ; 
+          szResultatLogon = '--- raspall003 - Logon FAILED - already logged' ;
+          console.log( szResultatLogon ) ;
+          res.status( 404 ).send( szResultatLogon ) ; 
      } else {
 
           if ( chSel == '.' ) {
                req.session.nom_usuari = szUserName ;
-               szResultat = '+++ raspall001 - Logon (' + szUserName + ') OK' ;
-               res.status( 200 ).send( szResultat ) ; 
+               szResultatLogon = '+++ raspall001 - Logon user (' + szUserName + ') OK, remote IP (' + Remote_IP + ')' ;
+               Poner_Bitacora ( szResultatLogon ) ;         // first send to console and log ...
+               res.status( 200 ).send( szResultatLogon ) ;  // ... then send to client
           } else {
                szResultat = '--- raspall002 - Logon FAILED - invalid credentials' ;
-               console.log( szResultat ) ;
-               res.status( 404 ).send( szResultat ) ; 
+               console.log( szResultatLogon ) ;
+               res.status( 404 ).send( szResultatLogon ) ; 
           } ;
      } ;
 
@@ -663,12 +725,13 @@ var Normal_User_Logging = (  ( User_Is_Logged( req.session ) ) && ( !(szUserName
 
 app.get( '/fer_logoff', function ( req, res ) {
 
+var szLogoff = '+++ raspall004 - Logoff user (' + req.session.nom_usuari + ').' ;
+
      req.session.nom_usuari = '' ;   // nobody logged in
      delete req.session.nom_usuari ;
 
-     var szLogoff = '+++ raspall004 - Logoff' ;
-     console.log( szLogoff ) ;
-     res.status( 200 ).send( szLogoff ) ; 
+     Poner_Bitacora ( szLogoff ) ;         // first send to console and log ...
+     res.status( 200 ).send( szLogoff ) ;  // ... then send result to client
 
 } ) ; // fer logoff
 
@@ -684,12 +747,14 @@ var python_options = {
   args: [ 'demos',  '-c', '/usr/local/bin/mydetails',  '-s', '34666777888',  'Envio des NODEJS' ]
 } ;
 
+var szResSndWassa ;
+
      console.log( 'posted ' + JSON.stringify( req.body ) ) ; // dump request body
 
 // agafar num tf i texte del BODY
      
-     var WhatsApp_Tf_Number = req.body.wdtel ;
-     var WhatsApp_Msg_Text  = '[' + (new Date).hhmmss() + '] ' + req.body.wdtxt ;
+var WhatsApp_Tf_Number = req.body.wdtel ;
+var WhatsApp_Msg_Text  = '[' + (new Date).hhmmss() + '] ' + req.body.wdtxt ;
 
      console.log( '>>> Menu enviar msg WhatsApp via python. Tf REQ param is (' + WhatsApp_Tf_Number + '). ' ) ;
 
@@ -704,10 +769,10 @@ var python_options = {
 //          console.log( JSON.stringify( err ) ) ;
 //          if ( err ) throw err ;
           var miRC = err.exitCode ;
-          szResultat = '(+) Snd WhatsApp Python RC (' + miRC + ').' ;
+          szResSndWassa = '(+) Snd WhatsApp Python RC (' + miRC + ').' ;
 
-          console.log( szResultat ) ;
-          res.status( 200 ).send( szResultat ) ; 
+          console.log( szResSndWassa ) ;
+          res.status( 200 ).send( szResSndWassa ) ; 
      } ) ; // run
 
 } ) ; // enviar mensage whatsapp
@@ -715,10 +780,10 @@ var python_options = {
 
 app.get( '/foto_esborrar_fitxer', function (req, res) {
 
+var szResultatEsborrar = '+++ file (' + png_File + ') deleted successfully' ;
      borrar_Fichero( png_File ) ;
-     szResultat = '+++ file (' + png_File + ') deleted successfully' ;
-     console.log( szResultat ) ;
-     res.status( 200 ).send( szResultat ) ; 
+     console.log( szResultatEsborrar ) ;
+     res.status( 200 ).send( szResultatEsborrar ) ; 
 
 } ) ; // foto esborrar
 
@@ -742,8 +807,8 @@ var python_options = {
           console.log( '(+) Python results are (%j).', results ) ; // results is an array consisting of messages collected during execution
           png_File = String( results ) ;                           // convert to string
 
-          szResultat = '+++ foto feta. Fitxer ('+ png_File + ').' ;
-          res.status( 200 ).send( szResultat ) ; 
+var szResultatFerFoto = '+++ foto feta. Fitxer ('+ png_File + ').' ;
+          res.status( 200 ).send( szResultatFerFoto ) ; 
      } ) ; // run
 
 } ) ; // fer foto
@@ -765,27 +830,27 @@ app.get( '/mostrar_foto', function (req, res) {
 
 app.post( '/modificar_interval/Periode=:res_nou_periode', function (req, res) { 
 
-     var Nou_Periode = req.params.res_nou_periode ;
-     console.log( '>>> Menu modificar periode (%s).', Nou_Periode ) ;
+var Nou_Periode = req.params.res_nou_periode ;
+var szResultatInterval = '>>> Menu modificar periode (' + Nou_Periode + '). ' ;
 
      if ( Nou_Periode == 'ultra' ) {
           myIntervalValue = 300 ;
-          szResultat = '+++ periode 300, velocitat ultra.' ;
+          szResultatInterval += '+++ periode 300, velocitat ultra.' ;
      } else if ( Nou_Periode == 'rapid' ) {
           myIntervalValue = 500 ;
-          szResultat = '+++ periode 500, velocitat rapida.' ;
+          szResultatInterval += '+++ periode 500, velocitat rapida.' ;
      } else if ( Nou_Periode == 'mitja' ) {
           myIntervalValue = 1000 ;
-          szResultat = '+++ periode 1000, velocitat mitja.' ;
+          szResultatInterval += '+++ periode 1000, velocitat mitja.' ;
      } else if ( Nou_Periode == 'lent' ) {
           myIntervalValue = 3000 ;
-          szResultat = '+++ periode 3000, velocitat lenta.' ;
+          szResultatInterval += '+++ periode 3000, velocitat lenta.' ;
      } else {
-          szResultat = '--- valor (' + Nou_Periode + ') no reconegut.' ;
+          szResultatInterval += '--- valor (' + Nou_Periode + ') no reconegut.' ;
      } ;
 
-     console.log( szResultat ) ;
-     res.status( 200 ).send( szResultat ) ; 
+     console.log( szResultatInterval ) ;
+     res.status( 200 ).send( szResultatInterval ) ; 
 
 } ) ; // modificar interval intermitencies
 
@@ -794,53 +859,53 @@ app.post( '/modificar_interval/Periode=:res_nou_periode', function (req, res) {
 
 app.post( '/menu_engegar_sequencia/Tipus=:res_tipus_sequencia', function (req, res) { 
 
-     var Nou_Tipus_Sequencia = req.params.res_tipus_sequencia ;
-     szResultat = '>>> Menu engegar sequencia (' + Nou_Tipus_Sequencia + '). ' ;
+var Nou_Tipus_Sequencia = req.params.res_tipus_sequencia ;
+var szResSeq = '>>> Menu engegar sequencia (' + Nou_Tipus_Sequencia + '). ' ;
 
      switch ( Nou_Tipus_Sequencia ) {
 
           case 'intermitent_verd':
-               szResultat += '+++ color verd. T (' + myIntervalValue + ').' ;
+               szResSeq += '+++ color verd. T (' + myIntervalValue + ').' ;
                Q_sequenciador = 1 ;
           break ;
 
           case 'intermitent_groc':
-               szResultat += '+++ color groc. T (' + myIntervalValue + ').' ;
+               szResSeq += '+++ color groc. T (' + myIntervalValue + ').' ;
                Q_sequenciador = 3 ;
           break ;
 
           case 'intermitent_vermell':
-               szResultat += '+++ color vermell. T (' + myIntervalValue + ').' ;
+               szResSeq += '+++ color vermell. T (' + myIntervalValue + ').' ;
                Q_sequenciador = 5 ;
           break ;
 
           case 'intermitent_tres_llums':
-               szResultat += '+++ 3 colors. T (' + myIntervalValue + ').' ;
+               szResSeq += '+++ 3 colors. T (' + myIntervalValue + ').' ;
                Q_sequenciador = 7 ;
           break ;
 
           case 'sequencia_VAR':
-               szResultat += '+++ sequencia VAR. T (' + myIntervalValue + ').' ;
+               szResSeq += '+++ sequencia VAR. T (' + myIntervalValue + ').' ;
                Q_sequenciador = 9 ;
           break ;
 
           case 'sequencia_RAV':
-               szResultat += '+++ sequencia RAV. T (' + myIntervalValue + ').' ;
+               szResSeq += '+++ sequencia RAV. T (' + myIntervalValue + ').' ;
                Q_sequenciador = 12 ;
           break ;
 
           case 'sequencia_random_de_tres':
-               szResultat += '+++ sequencia Random (0..2). T (' + myIntervalValue + ').' ;
+               szResSeq += '+++ sequencia Random (0..2). T (' + myIntervalValue + ').' ;
                Q_sequenciador = 15 ;
           break ;
 
           case 'sequencia_random_de_vuit':
-               szResultat += '+++ sequencia Random (0..7). T (' + myIntervalValue + ').' ;
+               szResSeq += '+++ sequencia Random (0..7). T (' + myIntervalValue + ').' ;
                Q_sequenciador = 16 ;
           break ;
 
           default:
-               szResultat += '--- valor (' + Nou_Tipus_Sequencia + ') no reconegut.' ;
+               szResSeq += '--- valor (' + Nou_Tipus_Sequencia + ') no reconegut.' ;
                Q_sequenciador = 0 ;
 
      } ; // switch Nou_Tipus_Sequencia
@@ -854,10 +919,10 @@ app.post( '/menu_engegar_sequencia/Tipus=:res_tipus_sequencia', function (req, r
                                                                                // returns a Timeout for use with clearTimeout().
      } ;
 
-     console.log( szResultat ) ;
-     res.status( 200 ).send( szResultat ) ; 
+     console.log( szResSeq ) ;
+     res.status( 200 ).send( szResSeq ) ; 
 
-} ) ; // engegar sequencia intermitent verd
+} ) ; // engegar sequencia
 
 
 // creacio del servidor :

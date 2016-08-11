@@ -7,9 +7,15 @@
    timg -> tSPAsem
 */
 
+
+#bitacora_data {
+    font-family: Lucida Console, Courier New, monospace ;
+    background: #E0E0E0 ;
+ }
+
 #contingut {
     border: 1px solid blue ;
-    background: #a0a0a0 ;
+    background: #A0A0A0 ;
     text-align: center ;
  }
 
