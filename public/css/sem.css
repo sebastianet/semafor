@@ -9,6 +9,7 @@
 
 
 #bitacora_data {
+    font-size: 10px ;
     font-family: Lucida Console, Courier New, monospace ;
     background: #E0E0E0 ;
  }
@@ -55,7 +56,7 @@
     margin-top: 15px ;
  }
 .tsemwork td {
-    padding-right:10px ;
+    padding-right: 10px ;
  }
 
 
