@@ -1,6 +1,6 @@
 .
 Fitxer "/home/pi/semafor/manual_usuari.txt"
-Darrera modificacio : 20160811, 00:49
+Darrera modificacio : 20160812, 21:49
 .
 #################################################################################
 #                                                                               #
@@ -11,9 +11,10 @@ Darrera modificacio : 20160811, 00:49
 .
 Com aturar el Raspberry
 
-1) conectar el portatil al Raspberry fent servir el client "putty"
-2) engegar la comanda "sudo  shutdown  -h  now"
-3) des-endollar el Radspberry per manegar el cablejat
+1) des el browser, entrar a l'aplicacio del semafor i donar la comanda "Bye" - aixo tanca l'aplicacio al raspberry
+2) conectar el portatil al Raspberry fent servir el client "putty"
+3) engegar la comanda "sudo  shutdown  -h  now" - aixo tanca el sistema operatiu del Raspberry
+4) des-endollar el Radspberry per manegar el cablejat
 
 .
 Com engegar el Raspberry
@@ -86,4 +87,35 @@ Resum de URLs interessants
 
      http://79.156.26.75:9007
 
+
+.
+Resum de Linux
+
+Que es Linux ? Es un sistema operatiu lliure
+
+Que es un sistema operatiu ? Es un conjunt de eines que ens permeten manegar els components del nostre ordinador
+
+Quins components te el meu ordinador ? Memoria, unitat de proces i unitats de entrada/sortida
+
+Quines unitats de entrada/sortida fem servir ? El teclat, el disk i les comunicacions
+
+Qui escolta el que escric al teclat ? Es un programa anomenat "shell" que interpreta el que demanem i dona ordres al sistema operatiu
+
+Que conte el disk ? El sistema de fitxers, que poden ser dades o programes
+
+Com s'organitza el sistema de fitxers ? En forma jerarquica o piramidal, on la arrel s'anomena "/"
+
+Com s'accedeix normalment al shell ? Amb el "putty"
+
+Quatre comandes elementals :
+
+    ls -al           mostrar el contingut del directori actual, on soc ara
+    pwd              mostrar el nom del directori actual, com per exemple "/home/pi/semafor"
+    cd ..            pujar al directori "pare" del directori actual, com per exemple "/home/pi"
+    cd <nom>         baixar del directori actual al directori "fill" anomenat <nom>, com "/home/pi/eines"
+    cat <nom>        mostrar per pantalla el contingut del fitxer <nom>
+
+On son les comendes que coneix el sistema ? A /usr/sbin i a /usr/bin
+
+Com puc saber els parametres de les diverses comandes ? Amb la comanda "man <nom_de_comanda>", com "man ls". Se surt amb "q"
 

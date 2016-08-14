@@ -39,8 +39,26 @@
     color: green ;
  }
 
+.button_logon {
+    font-size: 20px ;
+    background-color: #008CBA ;
+    border-radius: 12px ;
+    padding: 12px 28px;
+ }
+.button_logon:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+ }
+
 .imgleft {
     border: 1px solid red ;
+ }
+
+.logon_txt {
+    background-color: #006600 ;
+    height: 30px ;
+    width: 200px ;
+    padding: 1px ;
+    font-size: 24px ;
  }
 
 .tpeu {
@@ -118,6 +136,10 @@
 
 .txtblanc {
     background-color: #FFFFFF ;
+ }
+
+.white_top {
+    border-top: 1px solid white ;
  }
 
 .iimatge {

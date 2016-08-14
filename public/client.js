@@ -179,6 +179,13 @@ $( "#clkActivar_random_vuit" ).click( function() {
 }) ; // activar sequencia RANDOM-8
 
 
+$( "#clkAturar_tot" ).click( function() {
+    $.post( '/menu_apagar_llum/Color=seq_tot', function( page ) {
+        console.log( '*** index - demanem al server ATURAR sequencia TOT.' ) ;
+        $( "#contingut" ).html( page ) ; // show received HTML at specific <div>
+    }) ; // post(aturar)
+}) ; // aturar sequencia TOT
+
 $( "#clkAturar_VAR" ).click( function() {
     $.post( '/menu_apagar_llum/Color=seq_var', function( page ) {
         console.log( '*** index - demanem al server ATURAR sequencia VAR.' ) ;
@@ -350,7 +357,7 @@ $( "#clkFoto_netejar" ).click( function() {
 
 $( "#clkFoto_show_directe" ).click( function() {
 
-    var szFileFoto = '/images/directe.jpg' ;
+var szFileFoto = '/images/directe.jpg' ;
 
     $( "#imatge_webcam" ).attr( 'src', szFileFoto ) ;
     var szOut = '*** index mostrar foto directe (' + szFileFoto + ')' ;
@@ -385,7 +392,7 @@ function logon_ready() {
 
 function preparemSendLogonClick() {
 
-    var logon_url = '/fer_logon' ;
+var logon_url = '/fer_logon' ;
 
     $( '#click_logon_send' ).click( function() { // when user clicks on logon() then ...
 
@@ -394,7 +401,6 @@ function preparemSendLogonClick() {
             logon_pwd: $( '#lpwd' ).val()
         } ;
 
-//        var szURL = '/logon_url/' + logon_data ;
         var szURL = logon_url + '/nom_Logon=' + logon_data.logon_usr + '&pwd_Logon=' + logon_data.logon_pwd
 
         console.log( 'LOGON() URL is ('+ szURL +').' ) ;

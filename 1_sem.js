@@ -28,6 +28,7 @@
 // 1.1.f - velocitat repeticio ultra rapida. Allow 'toor' logon.
 // 1.1.g - espai mes gran per texte cap a whatsapp - missatge estat "msg whatsapp enviat ok"
 // 1.1.h - quadern de bitacora amb 12 linies - szResultat sempre local.
+// 1.1.i - un sol boto per "apagar" - en comensar cada operacio hi ha un "apagar_tot"
 
 
 // Conexionat del GPIO :
@@ -67,11 +68,12 @@
 
 // Temes pendents :
 //     (*) enlloc de console.log() fer "bitacora(szOut)" per afegir timestamp a tots de cop i volta
+//     (*) escriure a /var/log/messages un missatge amb el nom del nostre log
 //     (*) drop down menu amb els numeros de tf mes habituals (segons qui ha fet logon)
+//     (*) fer_foto + mostrar_foto en una sola operacio
 //     (*) abans de fer una foto, esborrar la anterior (encara en tenim el nom)
 //     (*) provar des un mobil - la pantalla es molt petita !
 //     (*) enviat missatge whatsapp amb una imatge des el browser
-//     (*) fer LOGON() obligatori i fer una trassa de IPs que entren
 //     (*) cron - tasca "netejar"
 //     (*) obrir el router per accedir el client des Moscu - http://usuaris.tinet.cat/sag/rspi3.htm#rspi_obrir_ports
 //     (*) obrir el router per actualitzar el software via SSH al port 22
@@ -80,11 +82,15 @@
 // Descripcio del contingut global : /home/pi/contingut.txt
 // Manual del usuari : /home/pi/semafor/manual_usuari.txt
 
-// Missatges que envia el servidor :
-//     szResultat = '+++ raspall001 - LOGON(' + szUserName + ') OK' ;
-//     szResultat = '--- raspall002 - LOGON FAILED - invalid credentials' ;
-//     szResultat = '--- raspall003 - Logon FAILED - already logged' ;
-//     szResultat = '+++ raspall004 - Logoff' ;
+// Missatges que envia el servidor i surten a Bitacora :
+//     '+++ raspall001 - Logon user (' + szUserName + ') OK' ;
+//     '--- raspall002 - LOGON FAILED - invalid credentials' ;
+//     '--- raspall003 - Logon FAILED - already logged' ;
+//     '+++ raspall004 - Logoff' ;
+//     5 semafor
+//     '+++ raspall006 - Foto feta' ;
+//     '+++ raspall007 - send WhatsApp Python RC'
+//     '+++ raspall008 - Identificacio'
 
 // Estructura de la pagina - veure INDEX.HTM
 //     a dalt tenim "peudepagina", jejeje
@@ -131,7 +137,7 @@ var Q_sequenciador  = 0 ;               // estat del sequenciador := aturat ;
 var myIntervalObject ;                  // used by clearInterval.
 var myIntervalValue = 1000 ;            // slow = 3000, normal = 1000, fast = 500.
 // var szResultat      = '' ;              // console and client return string
-var myVersio        = 'v1.1.h' ;        // version identifier
+var myVersio        = 'v 1.1.i' ;       // version identifier
 var png_File        = '/home/pi/semafor/public/images/webcam/webcam.png' ; // created by python
 var bitacora        = new Array( " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " " ) ; // 12 lines
 var idx_bitacora    = 0 ;
@@ -202,9 +208,10 @@ function User_Is_Logged( Param_Sessio ) {
 
 function Poner_Bitacora ( szIn ) {
 
-     console.log( 'Posar bitacora : ' + szIn ) ;                                          // first, write to console
+var szOut = (new Date).yyyymmdd() + '-' + (new Date).hhmmss() + ' ' + szIn + '<br>' ;
+     console.log( 'Posar bitacora : ' + szOut ) ;                                      // first, write to console
+     bitacora[ idx_bitacora ] = szOut ;                                                // second, record for logging
 
-     bitacora[ idx_bitacora ] = szIn ;                              // second, record for logging
      idx_bitacora = idx_bitacora + 1 ;
      if ( idx_bitacora === max_bitacora ) { idx_bitacora = 0 } ;
      return 0 ;
@@ -553,7 +560,7 @@ var szResultatBitacora = Listar_Bitacora() ;
 
 app.get( '/identificar', function ( req, res ) {
 
-var szResultatID  = '+++ app SEM JALL. ' ;
+var szResultatID  = '+++ raspall008 - Identificacio +++ app SEM. ' ;
 
      szResultatID += 'Versio [' + myVersio + ']. ' ;
      szResultatID += 'HN [' + app.get( 'appHostname' ) + ']. ' ;
@@ -635,6 +642,7 @@ var szResultatApagar = '>>> Menu apagar llum (' + Apagar_Llum_Color + '). ' ;
 //     } ;
 
      aturar_Llums_i_Tot() ;
+
      szResultatApagar += '+++ tots els llums apagats.' ;
      console.log( szResultatApagar ) ;
      res.status( 200 ).send( szResultatApagar ) ; 
@@ -648,15 +656,19 @@ var Encendre_Llum_Color = req.params.res_color_llum ;
 var szResultatEncendre = '>>> Menu encendre llum (' + Encendre_Llum_Color + '). ' ;
 
      if ( Encendre_Llum_Color == 'verd' ) {
+          aturar_Llums_i_Tot() ;
           encenderLuz( k_Verd ) ;
           szResultatEncendre += '+++ llum verda encesa.' ;
      } else if ( Encendre_Llum_Color == 'groc' ) {
+          aturar_Llums_i_Tot() ;
           encenderLuz( k_Groc ) ;
           szResultatEncendre += '+++ llum groc ences.' ;
      } else if ( Encendre_Llum_Color == 'vermell' ) {
+          aturar_Llums_i_Tot() ;
           encenderLuz( k_Vermell ) ;
           szResultatEncendre += '+++ llum vermell ences.' ;
      } else if ( Encendre_Llum_Color == 'tres_llums' ) {
+          aturar_Llums_i_Tot() ;
           encenderLuz( k_Verd ) ;
           encenderLuz( k_Groc ) ;
           encenderLuz( k_Vermell ) ;
@@ -715,8 +727,8 @@ var Normal_User_Logging = (  ( User_Is_Logged( req.session ) ) && ( !(szUserName
                res.status( 200 ).send( szResultatLogon ) ;  // ... then send to client
           } else {
                szResultat = '--- raspall002 - Logon FAILED - invalid credentials' ;
-               console.log( szResultatLogon ) ;
-               res.status( 404 ).send( szResultatLogon ) ; 
+               Poner_Bitacora ( szResultatLogon ) ;         // first send to console and log ...
+               res.status( 404 ).send( szResultatLogon ) ;  // ... then send to client
           } ;
      } ;
 
@@ -769,10 +781,10 @@ var WhatsApp_Msg_Text  = '[' + (new Date).hhmmss() + '] ' + req.body.wdtxt ;
 //          console.log( JSON.stringify( err ) ) ;
 //          if ( err ) throw err ;
           var miRC = err.exitCode ;
-          szResSndWassa = '(+) Snd WhatsApp Python RC (' + miRC + ').' ;
 
-          console.log( szResSndWassa ) ;
-          res.status( 200 ).send( szResSndWassa ) ; 
+          szResSndWassa = '+++ raspall007 - send WhatsApp Python RC (' + miRC + ').' ;
+          Poner_Bitacora ( szResSndWassa ) ;         // first send to console and log ...
+          res.status( 200 ).send( szResSndWassa ) ;  // ... then send to client
      } ) ; // run
 
 } ) ; // enviar mensage whatsapp
@@ -807,8 +819,9 @@ var python_options = {
           console.log( '(+) Python results are (%j).', results ) ; // results is an array consisting of messages collected during execution
           png_File = String( results ) ;                           // convert to string
 
-var szResultatFerFoto = '+++ foto feta. Fitxer ('+ png_File + ').' ;
-          res.status( 200 ).send( szResultatFerFoto ) ; 
+var szResultatFerFoto = '+++ raspall006 - Foto feta. Fitxer ('+ png_File + ').' ;
+          Poner_Bitacora ( szResultatFerFoto ) ;         // first send to console and log ...
+          res.status( 200 ).send( szResultatFerFoto ) ;  // ... then send to client
      } ) ; // run
 
 } ) ; // fer foto
@@ -861,6 +874,8 @@ app.post( '/menu_engegar_sequencia/Tipus=:res_tipus_sequencia', function (req, r
 
 var Nou_Tipus_Sequencia = req.params.res_tipus_sequencia ;
 var szResSeq = '>>> Menu engegar sequencia (' + Nou_Tipus_Sequencia + '). ' ;
+
+     aturar_Llums_i_Tot() ;
 
      switch ( Nou_Tipus_Sequencia ) {
 
