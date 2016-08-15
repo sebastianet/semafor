@@ -30,6 +30,7 @@
 // 1.1.h - quadern de bitacora amb 12 linies - szResultat sempre local.
 // 1.1.i - un sol boto per "apagar" - en comensar cada operacio hi ha un "apagar_tot"
 // 1.1.j - fem 5 fotos i agafem la darrera - resol problema de sincronisme de la NGS 3000
+// 1.1.k - remove ULTRA speed as responsible of bulb sudden death
 
 
 // Conexionat del GPIO :
@@ -138,7 +139,7 @@ var Q_sequenciador  = 0 ;               // estat del sequenciador := aturat ;
 var myIntervalObject ;                  // used by clearInterval.
 var myIntervalValue = 1000 ;            // slow = 3000, normal = 1000, fast = 500.
 // var szResultat      = '' ;              // console and client return string
-var myVersio        = 'v 1.1.j' ;       // version identifier
+var myVersio        = 'v 1.1.k' ;       // version identifier
 var png_File        = '/home/pi/semafor/public/images/webcam/webcam.png' ; // created by python
 var bitacora        = new Array( " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " " ) ; // 12 lines
 var idx_bitacora    = 0 ;
