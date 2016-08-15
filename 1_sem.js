@@ -30,7 +30,8 @@
 // 1.1.h - quadern de bitacora amb 12 linies - szResultat sempre local.
 // 1.1.i - un sol boto per "apagar" - en comensar cada operacio hi ha un "apagar_tot"
 // 1.1.j - fem 5 fotos i agafem la darrera - resol problema de sincronisme de la NGS 3000
-// 1.1.k - remove ULTRA speed as responsible of bulb sudden death
+// 1.1.k - remove ULTRA speed as responsible for bulb sudden death
+// 1.1.l - missatge SEMAFOR uniforme amb Bitacora
 
 
 // Conexionat del GPIO :
@@ -64,12 +65,13 @@
 //         rc 1               : https://github.com/tgalal/yowsup/issues/1702
 //     set Interval           : https://nodejs.org/api/timers.html
 //     session                ; https://github.com/expressjs/session
+//     obrir el router per accedir el client des Moscu - http://usuaris.tinet.cat/sag/rspi3.htm#rspi_obrir_ports
+//     o per actualitzar el software via SSH al port 22
 
 // Variables propies :
 //     req.session.nom_usuari
 
 // Temes pendents :
-//     (*) enlloc de console.log() fer "bitacora(szOut)" per afegir timestamp a tots de cop i volta
 //     (*) escriure a /var/log/messages un missatge amb el nom del nostre log
 //     (*) drop down menu amb els numeros de tf mes habituals (segons qui ha fet logon)
 //     (*) fer_foto + mostrar_foto en una sola operacio
@@ -77,19 +79,17 @@
 //     (*) provar des un mobil - la pantalla es molt petita !
 //     (*) enviat missatge whatsapp amb una imatge des el browser
 //     (*) cron - tasca "netejar"
-//     (*) obrir el router per accedir el client des Moscu - http://usuaris.tinet.cat/sag/rspi3.htm#rspi_obrir_ports
-//     (*) obrir el router per actualitzar el software via SSH al port 22
 
 // Pla de proves de correcte funcionament : 5_llista_de_proves.txt
 // Descripcio del contingut global : /home/pi/contingut.txt
-// Manual del usuari : /home/pi/semafor/manual_usuari.txt
+// Manual del usuari : /home/pi/semafor/3_manual_usuari.txt
 
 // Missatges que envia el servidor i surten a Bitacora :
 //     '+++ raspall001 - Logon user (' + szUserName + ') OK' ;
 //     '--- raspall002 - LOGON FAILED - invalid credentials' ;
 //     '--- raspall003 - Logon FAILED - already logged' ;
 //     '+++ raspall004 - Logoff' ;
-//     5 semafor
+//     '+++ raspall005 - Semafor' ;
 //     '+++ raspall006 - Foto feta' ;
 //     '+++ raspall007 - send WhatsApp Python RC'
 //     '+++ raspall008 - Identificacio'
@@ -139,7 +139,7 @@ var Q_sequenciador  = 0 ;               // estat del sequenciador := aturat ;
 var myIntervalObject ;                  // used by clearInterval.
 var myIntervalValue = 1000 ;            // slow = 3000, normal = 1000, fast = 500.
 // var szResultat      = '' ;              // console and client return string
-var myVersio        = 'v 1.1.k' ;       // version identifier
+var myVersio        = 'v 1.1.l' ;       // version identifier
 var png_File        = '/home/pi/semafor/public/images/webcam/webcam.png' ; // created by python
 var bitacora        = new Array( " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " " ) ; // 12 lines
 var idx_bitacora    = 0 ;
@@ -628,7 +628,7 @@ var szResMenuBye ;
 app.post( '/menu_apagar_llum/Color=:res_color_llum', function ( req, res ) {
 
 var Apagar_Llum_Color = req.params.res_color_llum ;
-var szResultatApagar = '>>> Menu apagar llum (' + Apagar_Llum_Color + '). ' ;
+var szResultatApagar = '+++ raspall005 - Semafor - apagar llum (' + Apagar_Llum_Color + '). ' ;
 
 //     if ( Apagar_Llum_Color == 'verd' ) {
 //          apagarLuz( k_Verd ) ;
@@ -645,8 +645,8 @@ var szResultatApagar = '>>> Menu apagar llum (' + Apagar_Llum_Color + '). ' ;
 
      aturar_Llums_i_Tot() ;
 
-     szResultatApagar += '+++ tots els llums apagats.' ;
-     console.log( szResultatApagar ) ;
+     szResultatApagar = '+++ raspall005 - Semafor - apagar tots els llums.' ;
+     Poner_Bitacora ( szResultatApagar ) ;            // first send to console and log ...
      res.status( 200 ).send( szResultatApagar ) ; 
 
 } ) ; // menu apagar llum
@@ -655,7 +655,7 @@ var szResultatApagar = '>>> Menu apagar llum (' + Apagar_Llum_Color + '). ' ;
 app.post( '/menu_encendre_llum/Color=:res_color_llum', function ( req, res ) {
 
 var Encendre_Llum_Color = req.params.res_color_llum ;
-var szResultatEncendre = '>>> Menu encendre llum (' + Encendre_Llum_Color + '). ' ;
+var szResultatEncendre = '+++ raspall005 - Semafor - encendre llum (' + Encendre_Llum_Color + '). ' ;
 
      if ( Encendre_Llum_Color == 'verd' ) {
           aturar_Llums_i_Tot() ;
@@ -679,7 +679,7 @@ var szResultatEncendre = '>>> Menu encendre llum (' + Encendre_Llum_Color + '). 
           szResultatEncendre += '--- color (' + Encendre_Llum_Color + ') no reconegut.' ;
      } ;
 
-     console.log( szResultatEncendre ) ;
+     Poner_Bitacora ( szResultatEncendre ) ;            // first send to console and log ...
      res.status( 200 ).send( szResultatEncendre ) ; 
 
 } ) ; // menu encendre llum
@@ -846,7 +846,7 @@ app.get( '/mostrar_foto', function (req, res) {
 app.post( '/modificar_interval/Periode=:res_nou_periode', function (req, res) { 
 
 var Nou_Periode = req.params.res_nou_periode ;
-var szResultatInterval = '>>> Menu modificar periode (' + Nou_Periode + '). ' ;
+var szResultatInterval = '+++ raspall005 - Semafor - modificar periode (' + Nou_Periode + '). ' ;
 
      if ( Nou_Periode == 'ultra' ) {
           myIntervalValue = 300 ;
@@ -864,7 +864,7 @@ var szResultatInterval = '>>> Menu modificar periode (' + Nou_Periode + '). ' ;
           szResultatInterval += '--- valor (' + Nou_Periode + ') no reconegut.' ;
      } ;
 
-     console.log( szResultatInterval ) ;
+     Poner_Bitacora ( szResultatInterval ) ;            // first send to console and log ...
      res.status( 200 ).send( szResultatInterval ) ; 
 
 } ) ; // modificar interval intermitencies
@@ -875,7 +875,7 @@ var szResultatInterval = '>>> Menu modificar periode (' + Nou_Periode + '). ' ;
 app.post( '/menu_engegar_sequencia/Tipus=:res_tipus_sequencia', function (req, res) { 
 
 var Nou_Tipus_Sequencia = req.params.res_tipus_sequencia ;
-var szResSeq = '>>> Menu engegar sequencia (' + Nou_Tipus_Sequencia + '). ' ;
+var szResSeq = '+++ raspall005 - Semafor - engegar sequencia (' + Nou_Tipus_Sequencia + '). ' ;
 
      aturar_Llums_i_Tot() ;
 
@@ -936,7 +936,7 @@ var szResSeq = '>>> Menu engegar sequencia (' + Nou_Tipus_Sequencia + '). ' ;
                                                                                // returns a Timeout for use with clearTimeout().
      } ;
 
-     console.log( szResSeq ) ;
+     Poner_Bitacora ( szResSeq ) ;            // first send to console and log ...
      res.status( 200 ).send( szResSeq ) ; 
 
 } ) ; // engegar sequencia
