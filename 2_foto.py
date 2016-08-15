@@ -7,6 +7,11 @@ import cv2
 # to debug this code, use
 #      python  -m pdb  3-v-en-color.py
 
+# Fer una foto amb la webcam i posar-la en un fitxer.
+# Es crida des "1_sem.js"
+# Imprimim el nom del fitxer que sera el parametre de tornada
+# No imprimim res mes
+
 import time
 timestr = time.strftime("%Y%m%d_%H%M%S")
 # print timestr

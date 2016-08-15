@@ -5,7 +5,7 @@ import sys
 print "### SYS version I have is " + str(sys.version_info[0]) + "." + str(sys.version_info[1]) + "." + str(sys.version_info[2])
 
 # Abans de engegar, fer "export DISPLAY=:0" o "export DISPLAY=192.168.1.36:0.0"
-# La sortida es cap al HDMI o cap el Xming al W500 
+# La sortida sera cap al HDMI local o cap el Xming remot
 
 # 0 = primera webcam
 cap = cv2.VideoCapture(0)
