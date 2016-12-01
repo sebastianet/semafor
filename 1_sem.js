@@ -32,7 +32,8 @@
 // 1.1.j - fem 5 fotos i agafem la darrera - resol problema de sincronisme de la NGS 3000
 // 1.1.k - remove ULTRA speed as responsible for bulb sudden death
 // 1.1.l - missatge SEMAFOR uniforme amb Bitacora
-// 1.1.m - s pot saltar entre els camps del logon() amb TAB
+// 1.1.m - es pot saltar entre els camps del logon() amb TAB
+// 1.1.n - fix msg raspall 002
 
 
 // Conexionat del GPIO :
@@ -140,7 +141,7 @@ var Q_sequenciador  = 0 ;               // estat del sequenciador := aturat ;
 var myIntervalObject ;                  // used by clearInterval.
 var myIntervalValue = 1000 ;            // slow = 3000, normal = 1000, fast = 500.
 // var szResultat      = '' ;              // console and client return string
-var myVersio        = 'v 1.1.m' ;       // version identifier
+var myVersio        = 'v 1.1.n' ;       // version identifier
 var png_File        = '/home/pi/semafor/public/images/webcam/webcam.png' ; // created by python
 var bitacora        = new Array( " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " " ) ; // 12 lines
 var idx_bitacora    = 0 ;
@@ -719,7 +720,8 @@ var Normal_User_Logging = (  ( User_Is_Logged( req.session ) ) && ( !(szUserName
 
      if ( Normal_User_Logging ) {
           szResultatLogon = '--- raspall003 - Logon FAILED - already logged' ;
-          console.log( szResultatLogon ) ;
+//          console.log( szResultatLogon ) ;
+          Poner_Bitacora ( szResultatLogon ) ;         // first send to console and log ...
           res.status( 404 ).send( szResultatLogon ) ; 
      } else {
 
@@ -729,7 +731,7 @@ var Normal_User_Logging = (  ( User_Is_Logged( req.session ) ) && ( !(szUserName
                Poner_Bitacora ( szResultatLogon ) ;         // first send to console and log ...
                res.status( 200 ).send( szResultatLogon ) ;  // ... then send to client
           } else {
-               szResultat = '--- raspall002 - Logon FAILED - invalid credentials' ;
+               szResultatLogon = '--- raspall002 - Logon FAILED - invalid credentials' ;
                Poner_Bitacora ( szResultatLogon ) ;         // first send to console and log ...
                res.status( 404 ).send( szResultatLogon ) ;  // ... then send to client
           } ;

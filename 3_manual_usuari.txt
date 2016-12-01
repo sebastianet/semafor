@@ -47,6 +47,7 @@ Com saber la IP externa (o publica) de la nostra instalacio (Raspall i aplicacio
 
 La IP publica canvia cada 10 o 15 dies, segons decideix Timofonica.
 Cada cop que les comunicacions es restableixen, el Raspall la envia al correu electronic llovetbasura@gmail.com
+Tambe cada matinada a les 4am (veure "crontab -l" del root)
 
 .
 Com accedir a la nostra aplicacio del semafor des l'exterior
@@ -57,7 +58,7 @@ Com accedir a la nostra aplicacio del semafor des l'exterior
 .
 Com accedir a la nostra aplicacio del semafor des la xarxa privada
 
-Obrim un navegador amb la URL = http:///192.168.1.123:1212
+Obrim un navegador amb la URL = http://192.168.1.123:1212
 
 .
 Com saber la IP del portatil
@@ -71,6 +72,12 @@ Com saber si hi ha conectivitat entre el portatil i el Raspall
 
 En una Command Line posem la comanda "ping  -t  192.168.1.123"
 Si hi ha resposta es que hi ha conectivitat.
+
+.
+Fitxers interessants
+
+*) /etc/sshd_config               - hi posa el nom del fitxer on hi ha el texte de benvinguda del putty
+*) /home/pi/eines/cron_feina.sh   - tasca executada cada matinada
 
 .
 Resum de URLs interessants
@@ -114,6 +121,7 @@ Quatre comandes elementals :
     cd ..            pujar al directori "pare" del directori actual, com per exemple "/home/pi"
     cd <nom>         baixar del directori actual al directori "fill" anomenat <nom>, com "/home/pi/eines"
     cat <nom>        mostrar per pantalla el contingut del fitxer <nom>
+    vi <nom>         editar el fitxer <nom> - compte : no es un editor facil
 
 On son les comendes que coneix el sistema ? A /usr/sbin i a /usr/bin
 
