@@ -32,7 +32,7 @@ function Posar_Pagina_Logon() {
         $( "#SPA_data" ).html( page ) ; // show received HTML at specific <div>
     }) ; // get(logon.htm)
 
-    $( "#contingut" ).html( 'El servidor &eacute;s plenament funcional' ) ; // show received HTML at specific <div>
+    $( "#contingut" ).html( 'El servidor &eacute;s plenament funcional - use IDENT to display Hostname' ) ; // show received HTML at specific <div>
 
 } ; // Posar_Pagina_Logon
 

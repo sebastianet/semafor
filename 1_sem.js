@@ -34,6 +34,7 @@
 // 1.1.l - missatge SEMAFOR uniforme amb Bitacora
 // 1.1.m - es pot saltar entre els camps del logon() amb TAB
 // 1.1.n - fix msg raspall 002
+// 1.1.o - fix msg inicial
 
 
 // Conexionat del GPIO :
@@ -141,7 +142,7 @@ var Q_sequenciador  = 0 ;               // estat del sequenciador := aturat ;
 var myIntervalObject ;                  // used by clearInterval.
 var myIntervalValue = 1000 ;            // slow = 3000, normal = 1000, fast = 500.
 // var szResultat      = '' ;              // console and client return string
-var myVersio        = 'v 1.1.n' ;       // version identifier
+var myVersio        = 'v 1.1.o' ;       // version identifier
 var png_File        = '/home/pi/semafor/public/images/webcam/webcam.png' ; // created by python
 var bitacora        = new Array( " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " " ) ; // 12 lines
 var idx_bitacora    = 0 ;
